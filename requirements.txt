@@ -1,0 +1,8 @@
+opencv-python
+pygame
+PyQt5
+python-docx
+requests
+docx2pdf
+pandas
+paramiko

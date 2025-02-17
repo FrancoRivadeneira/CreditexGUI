@@ -50,9 +50,10 @@ class CajaSensoresNetworkCheckThread(QThread):
                         self.falseParent._Var_valueCajaSensores = 0
                         self.connection_status.emit(0)
                         current_status = (
-                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: red; font-weight: bold;\">(ERROR)</span> "
-                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: white;\">Caja Sensores NO CONECTADO!</span>"
+                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: red; font-weight: bold; font-size: 17px;\">(ERROR)</span> "
+                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: white; font-size: 17px;\">Caja Sensores NO CONECTADO!</span>"
                         )
+
                         self.connection_status_signal.emit(current_status)
                 else:
                     command = ["ping", "-c", "1", ip]

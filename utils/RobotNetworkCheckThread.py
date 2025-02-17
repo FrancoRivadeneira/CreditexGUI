@@ -51,15 +51,16 @@ class RobotNetworkCheckThread(QThread):
                         self.connection_status.emit(1)
                         self.falseParent._Var_valueRobot += 1
                         if self.falseParent._Var_valueRobot == 1:
-                            current_status = "<font color='green'>>Robot CONECTADO!</font>"
+                            current_status = "<span style=\"font-family: 'MS Shell Dlg 2'; color: green; font-size: 17px;\">Robot CONECTADO!</span>"
                             self.connection_status_signal.emit(current_status)
                     else:
                         self.falseParent._Var_valueRobot = 0
                         self.connection_status.emit(0)
                         current_status = (
-                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: red; font-weight: bold;\">(ERROR)</span> "
-                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: white;\">Robot NO CONECTADO!</span>"
+                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: red; font-weight: bold; font-size: 17px;\">(ERROR)</span> "
+                            "<span style=\"font-family: 'MS Shell Dlg 2'; color: white; font-size: 17px;\">Robot NO CONECTADO!</span>"
                         )
+
                         self.connection_status_signal.emit(current_status)
                 else:
                     command = ["ping", "-c", "1", ip]

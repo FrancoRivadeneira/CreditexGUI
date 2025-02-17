@@ -18,9 +18,11 @@ from utils.socketReception import socketReception
 from utils.StopReader import StopReader
 from utils.HoraUpdater import HoraUpdater
 from utils.DateUpdater import DateUpdater
+from utils.TakePhoto import TakePhoto
 from MainWindow import Ui_MainWindow
 
 ## Library for PyQt
+import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import *  ###
 from PyQt5.QtCore import *     ###
 from PyQt5.QtGui import *      ###
@@ -38,7 +40,7 @@ import pickle
 import pyqtgraph as pg         ###
 from PyQt5.uic import loadUi
 
-
+FLAG_AUTO=False
 """ COMANDOS PARA LA NUCLEO"""
 
 comandoList=[ ["$OAX3J0A",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0],"Avanzar"],
@@ -77,7 +79,7 @@ ROBOT_TERRESTRE_USERNAME= "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 puerto = 22  # Puerto por defecto de SSH
 ROBOT_TERRESTRE_PORT=8666
-ROBOT_TERRESTRE_CAMS_PORT_LIST=[8080,8088]
+ROBOT_TERRESTRE_CAMS_PORT_LIST=[8080,8088,8085]
 ROBOT_TERRESTRE_FRAME_RATE=10
 ROBOT_TERRESTRE_WIDTH_FRAME_CAM=640
 ROBOT_TERRESTRE_HEIGHT_FRAME_CAM=480
@@ -287,6 +289,9 @@ class GUI(QMainWindow):
 
         self._THREAD_updateCamera2=Camera(self,2)
         self._THREAD_updateCamera2.change_pixmap_signal.connect(self.update_image2)
+
+        self._THREAD_updateCamera3=Camera(self,3)
+        self._THREAD_updateCamera3.change_pixmap_signal.connect(self.update_image3)
         # SSH Imu
         self._THREAD_imuDataReader=imuDataReader(self)
         self._THREAD_imuDataReader._SIGNAL_data.connect(self.updateMesh)
@@ -323,6 +328,7 @@ class GUI(QMainWindow):
         self._THREAD_DateUpdater = DateUpdater(self)
         self._THREAD_DateUpdater._SIGNAL_data.connect(self.updateDate)
         self._THREAD_DateUpdater.start() 
+
         
         
         """ Definicion de Timers"""
@@ -339,9 +345,11 @@ class GUI(QMainWindow):
         # self.ui.Apagar_button.pressed.connect(self.BUTTON_OFF_pressed)
         # self.ui.Sensores_button.pressed.connect(self.BUTTON_SENSORS_pressed)
         self.ui.button_Grabar.pressed.connect(self.BUTTON_GRABAR_pressed)
+        self.ui.btn_photo.pressed.connect(self.TAKE_PHOTO)
         self.ui.button_stop.pressed.connect(self.BUTTON_STOP_pressed)
         self.ui.button_info.pressed.connect(self.BUTTON_INFO_pressed)
-
+        self.ui.close_window_button.clicked.connect(lambda: self.close())
+        self.ui.btn_toggle.clicked.connect(self.TOGGLE_MODE)
         """ Iniciamos hilos o timers """
         self._THREAD_RobotNetwork_thread.start()
         self._THREAD_CajaSensoresNetwork_thread.start()
@@ -355,6 +363,7 @@ class GUI(QMainWindow):
         # Agregar el nuevo estado al final del QTextBrowser
         if status == 1:
             self._FLAG_Habilitar_Robot = 1
+
             
         else:
             self._FLAG_Habilitar_Robot = 0
@@ -663,6 +672,11 @@ class GUI(QMainWindow):
         else:
             self.ui.visImu.append("<font color='black'>>Los sensores todavia no estan emitiendo datos...</font>")
     
+    def TAKE_PHOTO(self):
+        self.TakePhoto=TakePhoto(base_url="http://10.100.110.26:1234")
+        self.TakePhoto.download_photo(endpoint="/ptz_snapshot",filename="Fotoxd.jpg")
+
+
     def BUTTON_STOP_pressed(self):
         if (self._FLAG_Habilitar_Grabacion==1):
             self.ui.button_Grabar.setStyleSheet("""QPushButton {
@@ -725,6 +739,7 @@ class GUI(QMainWindow):
             self._VAR_outVideoWrite_list[1] = cv2.VideoWriter(nombreDirVid, fourcc, frameRate, (self._VAR_WIDTH_FRAME_CAM, self._VAR_HEIGHT_FRAME_CAM))        
             self._THREAD_updateCamera1.start()
             self._THREAD_updateCamera2.start()
+            self._THREAD_updateCamera3.start()
         else:
             self.ui.visImu.append("<font color='black'>>Espere, a una conexión con el ROBOT...</font>")
             self._FLAG_SENSORES_pressed = False
@@ -769,7 +784,35 @@ class GUI(QMainWindow):
         self._VAR_outVideoWrite_list=[None,None]
         logging.info("Desconectado!")
         self._FLAG_buttonOnPressed=False
-          
+
+    def TOGGLE_MODE(self):
+        global FLAG_AUTO
+        if not FLAG_AUTO:
+            self.ui.label_mode.setText("Modo Autonomo")
+            pixmap = QPixmap("iconos/automode.svg")
+            pixmap = pixmap.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            icon = QIcon(pixmap)
+            self.ui.btn_toggle.setIcon(icon)
+            self.ui.btn_toggle.setIconSize(QtCore.QSize(60, 60))
+
+            if self._FLAG_socketConected:
+                # enviamos el comando a traves del socket
+                self._VAR_socketClient.sendall(pickle.dumps("$OAX2A1"))
+            
+            
+
+            FLAG_AUTO=True
+        else:
+            self.ui.label_mode.setText("Modo Teleoperado")
+            pixmap = QPixmap("iconos/Toggle.svg")
+            pixmap = pixmap.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            icon = QIcon(pixmap)
+            self.ui.btn_toggle.setIcon(icon)
+            self.ui.btn_toggle.setIconSize(QtCore.QSize(60, 60))
+            if self._FLAG_socketConected:
+                # enviamos el comando a traves del socket
+                self._VAR_socketClient.sendall(pickle.dumps("$OAX2A0"))
+            FLAG_AUTO=False
     @pyqtSlot(np.ndarray)
     def update_image1(self, cv_img):
         """Updates the image_label with a new opencv image"""
@@ -791,6 +834,18 @@ class GUI(QMainWindow):
         pixMap=QPixmap.fromImage(scaledImage)
         self.ui.label_camAruco.setPixmap(pixMap)
         self.ui.label_camAruco.setAlignment(Qt.AlignCenter)
+
+    @pyqtSlot(np.ndarray)
+    def update_image3(self, cv_img):
+        """Updates the image_label with a new opencv image"""
+        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        height, width, channel = rgb_image.shape
+        q_image = QImage(rgb_image.data, width, height, width * channel, QImage.Format_RGB888)        
+        scaledImage = q_image.scaled(self.ui.label_camPost.size(), aspectRatioMode=Qt.KeepAspectRatio)
+        pixMap=QPixmap.fromImage(scaledImage)
+        print("update image 3")
+        self.ui.label_camPost.setPixmap(pixMap)
+        self.ui.label_camPost.setAlignment(Qt.AlignCenter)
     
     def closeEvent(self, event):
         event.accept()

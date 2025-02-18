@@ -6,3 +6,4 @@ requests
 docx2pdf
 pandas
 paramiko
+pyserial

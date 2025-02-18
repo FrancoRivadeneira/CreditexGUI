@@ -3942,6 +3942,56 @@ color:rgb(255, 255, 255)
                                     </property>
                                    </widget>
                                   </item>
+                                  <item>
+                                   <widget class="QLabel" name="label_pitch_5">
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>25</height>
+                                     </size>
+                                    </property>
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI Variable</family>
+                                      <pointsize>14</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">color:rgb(255, 255, 255)</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Altura:</string>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QLabel" name="label_altura">
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>25</height>
+                                     </size>
+                                    </property>
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI Variable</family>
+                                      <pointsize>14</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">color:rgb(255, 255, 255)</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>0 mm</string>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
                                  </layout>
                                 </widget>
                                </item>
@@ -3981,6 +4031,80 @@ color:rgb(255, 255, 255)
                                   </item>
                                   <item>
                                    <widget class="QProgressBar" name="progressBar_polvo">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>0</width>
+                                      <height>20</height>
+                                     </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>50</height>
+                                     </size>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">QProgressBar
+{
+border: solid grey;
+border-radius: 10px;
+background-color:rgb(0, 0, 0);
+color: black;
+}
+QProgressBar::chunk 
+{
+background-color: #EA6C36;
+border-radius :10px;
+}
+QProgressBar::font
+{
+color:rgb(255, 255, 255)
+}</string>
+                                    </property>
+                                    <property name="value">
+                                     <number>68</number>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                    <property name="format">
+                                     <string notr="true"/>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QLabel" name="label_pitch_7">
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>25</height>
+                                     </size>
+                                    </property>
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI Variable</family>
+                                      <pointsize>14</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">color:rgb(255, 255, 255)</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Manual</string>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QProgressBar" name="progressBar_polvo_2">
                                     <property name="sizePolicy">
                                      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                                       <horstretch>0</horstretch>
@@ -8509,7 +8633,7 @@ background: transparent;
               <widget class="QFrame" name="frame_mapa">
                <property name="maximumSize">
                 <size>
-                 <width>16777215</width>
+                 <width>0</width>
                  <height>0</height>
                 </size>
                </property>
@@ -8602,7 +8726,7 @@ QPushButton:hover {
 </string>
                      </property>
                      <property name="text">
-                      <string>Elegir un mapa de inspección</string>
+                      <string>Elegir una fila de inspección</string>
                      </property>
                     </widget>
                    </item>
@@ -8729,7 +8853,7 @@ QPushButton:hover {
                          <string notr="true">color:#EA6C36;</string>
                         </property>
                         <property name="text">
-                         <string>Nuevo mapa</string>
+                         <string>Nueva Fila</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -10303,8 +10427,8 @@ QPushButton:hover {
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>0</width>
-                 <height>0</height>
+                 <width>16777215</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -10337,7 +10461,7 @@ QPushButton:hover {
                        <height>600</height>
                       </size>
                      </property>
-                     <widget class="QLabel" name="VisionCamara1_2">
+                     <widget class="QLabel" name="PTZ_Vision">
                       <property name="geometry">
                        <rect>
                         <x>50</x>
@@ -11179,39 +11303,39 @@ color:rgb(255, 255, 255)
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_69">
                          <item>
+                          <widget class="QLabel" name="label_123">
+                           <property name="font">
+                            <font>
+                             <family>Segoe UI Variable</family>
+                             <pointsize>14</pointsize>
+                            </font>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true">color:rgb(255, 255, 255)</string>
+                           </property>
+                           <property name="text">
+                            <string>Control PTZ</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
                           <widget class="QFrame" name="horizontalFrame_22">
                            <layout class="QHBoxLayout" name="horizontalLayout_98">
                             <item>
-                             <widget class="QLabel" name="label_107">
-                              <property name="font">
-                               <font>
-                                <family>Segoe UI Variable</family>
-                                <pointsize>14</pointsize>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">color:rgb(255, 255, 255)</string>
-                              </property>
-                              <property name="text">
-                               <string>F1</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_33">
+                             <widget class="QPushButton" name="btn_zoom_out">
                               <property name="minimumSize">
                                <size>
                                 <width>100</width>
-                                <height>50</height>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>700</width>
-                                <height>50</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="font">
@@ -11233,43 +11357,24 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="iconSize">
                                <size>
-                                <width>80</width>
-                                <height>80</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLabel" name="label_108">
-                              <property name="font">
-                               <font>
-                                <family>Segoe UI Variable</family>
-                                <pointsize>14</pointsize>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">color:rgb(255, 255, 255)</string>
-                              </property>
-                              <property name="text">
-                               <string>F2</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_34">
+                             <widget class="QPushButton" name="btn_ptz_up">
                               <property name="minimumSize">
                                <size>
                                 <width>100</width>
-                                <height>50</height>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>700</width>
-                                <height>50</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="font">
@@ -11291,8 +11396,47 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="iconSize">
                                <size>
-                                <width>80</width>
-                                <height>80</height>
+                                <width>100</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="btn_zoom_in">
+                              <property name="minimumSize">
+                               <size>
+                                <width>100</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="maximumSize">
+                               <size>
+                                <width>100</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <pointsize>10</pointsize>
+                                <weight>75</weight>
+                                <bold>true</bold>
+                               </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true"/>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset>
+                                <normaloff>iconos/Connect.svg</normaloff>iconos/Connect.svg</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                              </widget>
@@ -11304,36 +11448,17 @@ color:rgb(255, 255, 255)
                           <widget class="QFrame" name="horizontalFrame_23">
                            <layout class="QHBoxLayout" name="horizontalLayout_99">
                             <item>
-                             <widget class="QLabel" name="label_109">
-                              <property name="font">
-                               <font>
-                                <family>Segoe UI Variable</family>
-                                <pointsize>14</pointsize>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">color:rgb(255, 255, 255)</string>
-                              </property>
-                              <property name="text">
-                               <string>F3</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_35">
+                             <widget class="QPushButton" name="btn_ptz_left">
                               <property name="minimumSize">
                                <size>
                                 <width>100</width>
-                                <height>50</height>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>700</width>
-                                <height>50</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="font">
@@ -11355,43 +11480,24 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="iconSize">
                                <size>
-                                <width>80</width>
-                                <height>80</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLabel" name="label_112">
-                              <property name="font">
-                               <font>
-                                <family>Segoe UI Variable</family>
-                                <pointsize>14</pointsize>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">color:rgb(255, 255, 255)</string>
-                              </property>
-                              <property name="text">
-                               <string>F4</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_38">
+                             <widget class="QPushButton" name="btn_ptz_down">
                               <property name="minimumSize">
                                <size>
                                 <width>100</width>
-                                <height>50</height>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>700</width>
-                                <height>50</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="font">
@@ -11413,26 +11519,14 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="iconSize">
                                <size>
-                                <width>80</width>
-                                <height>80</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                              </widget>
                             </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="horizontalFrame_24">
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <layout class="QHBoxLayout" name="horizontalLayout_100">
                             <item>
-                             <widget class="QPushButton" name="btn_document_39">
+                             <widget class="QPushButton" name="btn_ptz_right">
                               <property name="minimumSize">
                                <size>
                                 <width>100</width>
@@ -11441,8 +11535,8 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>700</width>
-                                <height>50</height>
+                                <width>100</width>
+                                <height>100</height>
                                </size>
                               </property>
                               <property name="font">
@@ -11460,85 +11554,7 @@ color:rgb(255, 255, 255)
                               </property>
                               <property name="icon">
                                <iconset>
-                                <normaloff>iconos/pitch_nar.svg</normaloff>iconos/pitch_nar.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>100</width>
-                                <height>100</height>
-                               </size>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_41">
-                              <property name="minimumSize">
-                               <size>
-                                <width>100</width>
-                                <height>100</height>
-                               </size>
-                              </property>
-                              <property name="maximumSize">
-                               <size>
-                                <width>700</width>
-                                <height>50</height>
-                               </size>
-                              </property>
-                              <property name="font">
-                               <font>
-                                <pointsize>10</pointsize>
-                                <weight>75</weight>
-                                <bold>true</bold>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true"/>
-                              </property>
-                              <property name="text">
-                               <string/>
-                              </property>
-                              <property name="icon">
-                               <iconset>
-                                <normaloff>iconos/roll_nar.svg</normaloff>iconos/roll_nar.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>100</width>
-                                <height>100</height>
-                               </size>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QPushButton" name="btn_document_40">
-                              <property name="minimumSize">
-                               <size>
-                                <width>100</width>
-                                <height>100</height>
-                               </size>
-                              </property>
-                              <property name="maximumSize">
-                               <size>
-                                <width>700</width>
-                                <height>50</height>
-                               </size>
-                              </property>
-                              <property name="font">
-                               <font>
-                                <pointsize>10</pointsize>
-                                <weight>75</weight>
-                                <bold>true</bold>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true"/>
-                              </property>
-                              <property name="text">
-                               <string/>
-                              </property>
-                              <property name="icon">
-                               <iconset>
-                                <normaloff>iconos/yaw_nar.svg</normaloff>iconos/yaw_nar.svg</iconset>
+                                <normaloff>iconos/Connect.svg</normaloff>iconos/Connect.svg</iconset>
                               </property>
                               <property name="iconSize">
                                <size>
@@ -11570,175 +11586,18 @@ color:rgb(255, 255, 255)
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_29">
                    <item>
-                    <widget class="QFrame" name="verticalFrame_17">
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>240</height>
-                      </size>
-                     </property>
-                     <layout class="QVBoxLayout" name="verticalLayout_72">
-                      <property name="spacing">
-                       <number>0</number>
-                      </property>
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <widget class="QLabel" name="VisionCamara1_4">
-                        <property name="minimumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true">background-color: rgb(0,0,0);</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                        <property name="pixmap">
-                         <pixmap>imagenes/NoCamera.png</pixmap>
-                        </property>
-                        <property name="scaledContents">
-                         <bool>true</bool>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignCenter</set>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QFrame" name="verticalFrame_15">
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>240</height>
-                      </size>
-                     </property>
-                     <layout class="QVBoxLayout" name="verticalLayout_70">
-                      <property name="spacing">
-                       <number>0</number>
-                      </property>
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <widget class="QLabel" name="VisionCamara1_5">
-                        <property name="minimumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true">background-color: rgb(0,0,0);</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                        <property name="pixmap">
-                         <pixmap>imagenes/NoCamera.png</pixmap>
-                        </property>
-                        <property name="scaledContents">
-                         <bool>true</bool>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignCenter</set>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QFrame" name="verticalFrame">
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>240</height>
-                      </size>
-                     </property>
+                    <widget class="QWidget" name="verticalWidget" native="true">
                      <layout class="QVBoxLayout" name="verticalLayout_33">
-                      <property name="spacing">
-                       <number>0</number>
-                      </property>
-                      <property name="leftMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
                       <item>
-                       <widget class="QLabel" name="VisionCamara1_6">
-                        <property name="minimumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>420</width>
-                          <height>240</height>
-                         </size>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true">background-color: rgb(0,0,0);</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                        <property name="pixmap">
-                         <pixmap>imagenes/NoCamera.png</pixmap>
-                        </property>
-                        <property name="scaledContents">
-                         <bool>true</bool>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignCenter</set>
-                        </property>
-                       </widget>
+                       <layout class="QHBoxLayout" name="horizontalLayout_78">
+                        <item>
+                         <widget class="QSlider" name="verticalSlider">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                      </layout>
                     </widget>

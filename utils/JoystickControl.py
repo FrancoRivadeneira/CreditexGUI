@@ -8,21 +8,26 @@ import pygame                  ###
 from pygame.locals import *    ###
 import sys
 
+actuator_pos=0
 """ COMANDOS PARA LA NUCLEO"""
 
-comandoList=[ ["$OAX3J0A",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0],"Avanzar"],
-              ["$OAX3J0B",[0,1,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0],"Retroceder"],
-              ["$OAX3J0r",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1],"Giro Horario"],
-              ["$OAX3J0l",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0],"Giro Antihorario"],
-              ["$OAX3JR1",[0,0,0,0,1, 0,0,0,0,0, 0,1,0,0,0, 0,0],"Prender Luces"],
-              ["$OAX3JR2",[0,0,0,0,1, 0,0,0,0,0, 0,0,1,0,0, 0,0],"Apagar Luces"],
-              ["$OAX3JX1",[0,0,1,0,0, 0,0,0,0,0, 0,0,0,1,0, 0,0],"Aumentar Velocidad"],
-              ["$OAX3JX2",[0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,1, 0,0],"Disminuir Velocidad"],              
-              ["$OAX3JRA",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1],"Avanzar Derecha"],
-              ["$OAX3JLA",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0],"Avanzar Izquierda"],
-              ["$OAX1M"  ,[0,0,0,1,0, 0,0,0,0,0, 0,0,0,1,0, 0,0],"Activar Motores"], ### CAMBIAR ESTO es Y + FlechaArriba
-              ["$OAX3JAR",[0,0,0,1,0, 0,0,0,0,0, 0,0,0,0,1, 0,0],"Apagar Rele"], ## CAMBIAR ESTO es Y + FlechaAbajo
-              ["$OAX3JBE",[0,0,0,1,0, 0,0,0,0,0, 0,0,1,0,0, 0,0],"Boton Emergencia"]] ## CAMBIAR ESTO es Y + FlechaIzquierda
+comandoList=[ ["$OAX3J0A",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0],"Avanzar"],
+              ["$OAX3J0B",[0,1,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0],"Retroceder"],
+              ["$OAX3J0r",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,0,0],"Giro Horario"],
+              ["$OAX3J0l",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0],"Giro Antihorario"],
+              ["$OAX3JR1",[0,0,0,0,1, 0,0,0,0,0, 0,1,0,0,0, 0,0,0,0],"Prender Luces"],
+              ["$OAX3JR2",[0,0,0,0,1, 0,0,0,0,0, 0,0,1,0,0, 0,0,0,0],"Apagar Luces"],
+              ["$OAX3JX1",[0,0,1,0,0, 0,0,0,0,0, 0,0,0,1,0, 0,0,0,0],"Aumentar Velocidad"],
+              ["$OAX3JX2",[0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,1, 0,0,0,0],"Disminuir Velocidad"],              
+              ["$OAX3JRA",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,0,0],"Avanzar Derecha"],
+              ["$OAX3JLA",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,0,0,0],"Avanzar Izquierda"],
+              ["$OAX1M"  ,[0,0,0,1,0, 0,0,0,0,0, 0,0,0,1,0, 0,0,0,0],"Activar Motores"], ### CAMBIAR ESTO es Y + FlechaArriba
+              ["$OAX3JAR",[0,0,0,1,0, 0,0,0,0,0, 0,0,0,0,1, 0,0,0,0],"Apagar Rele"], ## CAMBIAR ESTO es Y + FlechaAbajo
+              ["$OAX3JBE",[0,0,0,1,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,0,0],"Boton Emergencia"],
+              ["$OAX2R1",[0,0,0,0,0, 0,0,0,0,1, 0,0,0,0,0, 0,0,0,0],"Activar Actuador"],
+              ["$OAX2R0",[0,0,0,0,0, 0,0,0,1,0, 0,0,0,0,0, 0,0,0,0],"Desactivar Actuador"],
+              ["$OAX3JLU",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,1,0],"Subir Actuador"],
+              ["$OAX3JLD",[0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,1],"Bajar Actuador"]] ## CAMBIAR ESTO es Y + FlechaIzquierda
 
 ## Aplicamos transpuesta a la lista de comandos para hacer uso del built function "index"
 comandoList = [list(x) for x in zip(*comandoList)]
@@ -39,6 +44,9 @@ class JoystickControl(QThread):
         super().__init__(None)
         self._run_flag = True
         self.falseParent=parent
+    
+        
+        
 
     def run(self):
         pygame.init()
@@ -67,7 +75,7 @@ class JoystickControl(QThread):
         idTrigger_Left=15
         idTrigger_Right=16
         ## Creamos el registro que contendrá el código indicando q botones se han presionado
-        buttonList=[0 for i in range(17)]
+        buttonList=[0 for i in range(19)]
         _FLAG_JoystickConnected=False
         oldCommand=""
         while self._run_flag:
@@ -122,6 +130,7 @@ class JoystickControl(QThread):
                     if event.type == JOYAXISMOTION:#Si se presiona una trigger (RT o LT)
                         #En el caso de los triggers, se analiza que tanto se ha presionado
                         #va de un rango de -0.99 (no presionado) a 0.99 (totalmente presionado)
+                        global actuator_pos
                         if event.axis == EVENT_TYPE_LEFT_TRIGGER:
                             if (event.value <0.99):
                                 buttonList[idTrigger_Left]=0
@@ -132,11 +141,32 @@ class JoystickControl(QThread):
                                 buttonList[idTrigger_Right]=0 #Se actualiza la variable correspondiente
                             else:
                                 buttonList[idTrigger_Right]=1
+                        if event.axis == 3:
+                            
+                            # Ajustar el contador según la inclinación del joystick
+                            if event.value < -0.5:  # Movimiento hacia arriba
+                                actuator_pos += 1
+                                buttonList[17]=1
+                                buttonList[18]=0
+                                                      
+                            elif event.value > 0.5:  # Movimiento hacia abajo
+                                actuator_pos -= 1
+                                buttonList[17]=0
+                                buttonList[18]=1
+                            else:
+                                buttonList[17]=0
+                                buttonList[18]=0
+                            # global comandoList
+                            # comandoList[0][13] = f"$OAX4G{str(actuator_pos).zfill(3)}"
+                            # print(comandoList[13][0])
+                                                            
                 ## Comparamos el registro
                 # Verificar si hay al menos un joystick conectado
                     Estado_conexion = 0
                     ## No existira comando, actualizamos valor a enviar
                 """ Enviamos el comando por el socket """
+                # print(buttonList)
+                # print(comandoList[0][13])
                 if buttonList in comandoList[1]:
                     id=comandoList[1].index(buttonList)
                     ## Obtenemos el comando

@@ -19,6 +19,7 @@ from utils.StopReader import StopReader
 from utils.HoraUpdater import HoraUpdater
 from utils.DateUpdater import DateUpdater
 from utils.TakePhoto import TakePhoto
+from utils.PTZ import PTZ
 from MainWindow import Ui_MainWindow
 
 ## Library for PyQt
@@ -31,7 +32,9 @@ import sys
 import os 
 import logging ## Libreria para info Logging
 import numpy as np             ###
+import pandas as pd
 import time
+import socket
 import threading ## For hilos
 from pygame.locals import *    ###
 import pickle
@@ -41,6 +44,8 @@ import pyqtgraph as pg         ###
 from PyQt5.uic import loadUi
 
 FLAG_AUTO=False
+FLAG_MAPA=False
+_FLAG_CONECT=True
 """ COMANDOS PARA LA NUCLEO"""
 
 comandoList=[ ["$OAX3J0A",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0],"Avanzar"],
@@ -100,6 +105,8 @@ class GUI(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.map_df = pd.read_csv('maps.csv')
+        self.initialize_map_frames()
                  
         """ DEFINICION de FLAG """
         self._FLAG_buttonOnPressed = False
@@ -285,13 +292,14 @@ class GUI(QMainWindow):
         # self._THREAD_joytickCommand._SIGNAL_updateJoystickIndicator.connect(self.ui.progressBar_mando.setValue)
         # Camaras
         self._THREAD_updateCamera1=Camera(self,1)
-        self._THREAD_updateCamera1.change_pixmap_signal.connect(self.update_image1)
+        self._THREAD_updateCamera1.change_pixmap_signal.connect(self.update_image2)
 
         self._THREAD_updateCamera2=Camera(self,2)
-        self._THREAD_updateCamera2.change_pixmap_signal.connect(self.update_image2)
+        self._THREAD_updateCamera2.change_pixmap_signal.connect(self.update_image3)
 
-        self._THREAD_updateCamera3=Camera(self,3)
-        self._THREAD_updateCamera3.change_pixmap_signal.connect(self.update_image3)
+        self._THREAD_updateCamera3=PTZ(self)
+        self._THREAD_updateCamera3.change_pixmap_signal.connect(self.update_image1)
+        # self._THREAD_updateCamera3.change_pixmap_signal.connect(self.update_image3)
         # SSH Imu
         self._THREAD_imuDataReader=imuDataReader(self)
         self._THREAD_imuDataReader._SIGNAL_data.connect(self.updateMesh)
@@ -350,6 +358,22 @@ class GUI(QMainWindow):
         self.ui.button_info.pressed.connect(self.BUTTON_INFO_pressed)
         self.ui.close_window_button.clicked.connect(lambda: self.close())
         self.ui.btn_toggle.clicked.connect(self.TOGGLE_MODE)
+        self.ui.btn_test.clicked.connect(self.depuracion)
+        self.ui.btn_ptz_down.clicked.connect(self._THREAD_updateCamera3.move_down)
+
+
+        """ Modos la GUI """
+        self.ui.btn_general.clicked.connect(self.distribuir_general)
+        # self.ui.btn_parada.clicked.connect(self.parada)
+        self.ui.btn_angulo.clicked.connect(self.distribuir_arm)
+        self.ui.btn_document.clicked.connect(self.distribuir_document)
+        self.ui.btn_archivos.clicked.connect(self.distribuir_archivos)
+        self.ui.btn_posicion.clicked.connect(self.distribuir_posicion)
+        self.ui.btn_tumi.clicked.connect(self.distribuir_secret)
+        # self.ui.btn_reset.clicked.connect(self.reset_button)
+        self.ui.btn_estadisticas.clicked.connect(self.GoEstadisticas)
+        self.ui.btn_generarReport.clicked.connect(self.GoGenerarReport)
+
         """ Iniciamos hilos o timers """
         self._THREAD_RobotNetwork_thread.start()
         self._THREAD_CajaSensoresNetwork_thread.start()
@@ -517,25 +541,30 @@ class GUI(QMainWindow):
         try:
             logging.info("Trama recibida: {}".format(tramaDatos[:-1]))
             comprobar = tramaDatos[0:6]
-            if comprobar == '$OAX1j':   ###  $OAX1jb145s15l0m11r0d1p1
-                bat = tramaDatos.find('b')
-                speed = tramaDatos.find('s')
-                lights = tramaDatos.find('l')
-                motors = tramaDatos.find('m')
-                lidar= tramaDatos.find('n')
-                dust= tramaDatos.find('d')
-                path= tramaDatos.find('p')
+            tramaSensores=tramaDatos[6:]
+            if comprobar == '$OAX1s':   ###  $OAX1jb145s15l0m11r0d1p1
+                print(f"Comprobar es {comprobar}")
+                bat = tramaSensores.find('b')
+                speed = tramaSensores.find('s')
+                lights = tramaSensores.find('l')
+                motors = tramaSensores.find('m')
+                lidar= tramaSensores.find('n')
+                dust= tramaSensores.find('d')
+                path= tramaSensores.find('p')
+                encoder= tramaSensores.find('e')
                 #lidar= tramaDatos.find('r')
                 
                 ## b:140 170
                 
                 if (bat != -1) and (speed != -1):
-                    valorBateria = tramaDatos[(bat+1):speed]
+                    valorBateria = tramaSensores[(bat+1):speed]
+                    print(f"Valor de la bateria: {valorBateria}")
                     if valorBateria == 'e':
                         logging.info('Error')
                     else:
                         if valorBateria.isnumeric():
-                            valorBateria = int(valorBateria)/10
+                            valorBateria = int(valorBateria)/10/3.95
+                            print(f"Valor de la bateria: {valorBateria}")
                             self.ui.label_bateria.setText("Bateria: {:.1f} V".format(valorBateria))
                             porcentaje = (valorBateria - self._VAR_MIN_VALOR_BATERIA)/self._VAR_RANGO_BATERIA*100 # normalizamos el valor de la batería
                             if porcentaje < 0 :
@@ -545,13 +574,13 @@ class GUI(QMainWindow):
                             else:
                                 self.ui.progressBar_bateria.setValue(int(porcentaje))
                 if (speed != -1) and (lights != -1):
-                    valorVelocidad = tramaDatos[(speed+1):lights]
+                    valorVelocidad = tramaSensores[(speed+1):lights]
                     if valorVelocidad.isnumeric():
                         valorVelocidad = int(valorVelocidad)
                         self.ui.label_velocidad.setText("Velocidad:")
                         self.ui.progressBar_velocidad.setValue(valorVelocidad)
                 if (lights != -1) and (motors != -1):
-                    valorLights = tramaDatos[(lights+1):motors]
+                    valorLights = tramaSensores[(lights+1):motors]
                     if valorLights.isnumeric():
                         valorLights = int(valorLights)
                         if valorLights == 1:
@@ -562,7 +591,7 @@ class GUI(QMainWindow):
                             # self.ui.progressBar_luces.setValue(0)
                             pass
                 if (motors != -1):
-                    valorMotores = tramaDatos[(motors+1):lidar] #Hay 4 motores
+                    valorMotores = tramaSensores[(motors+1):lidar] #Hay 4 motores
                     for id,motor in enumerate(valorMotores):
                         if motor.isnumeric():
                             motor = int(motor)
@@ -572,12 +601,12 @@ class GUI(QMainWindow):
                                 command = "self.ui.progressBar_motor{}.setValue(100)".format(id+1)
                             eval(command)
                 if (lidar!=-1):
-                    numCloud= tramaDatos[lidar+1:dust]
+                    numCloud= tramaSensores[lidar+1:dust]
                     if numCloud.isnumeric():
                         #self.ui.textBrowser_lidar.setText(numCloud)
                         print("lidar cloud")
                 if (dust != -1):
-                    valorDust = tramaDatos[(dust+1):path]
+                    valorDust = tramaSensores[(dust+1):path]
                     if valorDust.isnumeric():
                         valorDust = int(valorDust)
                         if valorDust == 0:
@@ -586,13 +615,19 @@ class GUI(QMainWindow):
                             command = "self.ui.progressBar_polvo.setValue(100)"
                         eval(command)
                 if (path != -1):
-                    valorPath = tramaDatos[(path+1):-1]
+                    valorPath = tramaSensores[(path+1):-encoder]
                     if valorPath.isnumeric():
                         valorPath = int(valorPath)
                         if valorPath == 0:
                             command = "self.ui.progressBar_path.setValue(0)"                       
                         if valorPath == 1:
                             command = "self.ui.progressBar_path.setValue(100)"
+                        eval(command)
+                if (encoder != -1):
+                    valorEncoder = tramaSensores[(encoder+1):-1]
+                    if valorEncoder.isnumeric():
+                        valorEncoder = int(valorEncoder)
+                        command = f"self.ui.label_altura.setText('{valorEncoder: 0} cm')"
                         eval(command)
                 
                             
@@ -673,6 +708,7 @@ class GUI(QMainWindow):
             self.ui.visImu.append("<font color='black'>>Los sensores todavia no estan emitiendo datos...</font>")
     
     def TAKE_PHOTO(self):
+        print("Foto tomada")
         self.TakePhoto=TakePhoto(base_url="http://10.100.110.26:1234")
         self.TakePhoto.download_photo(endpoint="/ptz_snapshot",filename="Fotoxd.jpg")
 
@@ -813,6 +849,480 @@ class GUI(QMainWindow):
                 # enviamos el comando a traves del socket
                 self._VAR_socketClient.sendall(pickle.dumps("$OAX2A0"))
             FLAG_AUTO=False
+    
+    def load_images_galery(self,folder_path="imagenes",isAlbum=False):
+        if not isAlbum:
+            self.ui.btn_fotos.setStyleSheet("QPushButton { color: black; background-color: #EA6C36; border-radius:20px; }")
+            self.ui.btn_album.setStyleSheet("QPushButton { color: white; background-color: #0F0F0F; border-radius:20px; }")
+        else:
+            self.ui.btn_album.setStyleSheet("QPushButton { color: black; background-color: #EA6C36; border-radius:20px; }")
+            self.ui.btn_fotos.setStyleSheet("QPushButton { color: white; background-color: #0F0F0F; border-radius:20px; }")
+        # Check if the folder_path exists
+        if not os.path.exists(folder_path):
+            print(f"The folder {folder_path} does not exist.")
+            return
+
+        # Create a scroll area
+        scroll_area = QScrollArea(self)
+        scroll_area.setWidgetResizable(True)
+
+        # Create a container widget and set it as the widget for the scroll area
+        container_widget = QWidget()
+        scroll_area.setWidget(container_widget)
+
+        # Create a grid layout for the container widget
+        layout = QGridLayout(container_widget)
+        container_widget.setLayout(layout)
+
+        # Recursive function to find all image files in the folder and its subfolders
+        def find_image_files(folder):
+            image_files = []
+            for root, dirs, files in os.walk(folder):
+                for file in files:
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                        image_files.append(os.path.join(root, file))
+            return image_files
+
+        # Find all image files in the folder and its subfolders
+        image_files = find_image_files(folder_path)
+
+        row, col = 0, 0
+        for i, file_path in enumerate(image_files):
+            print(f"Processing file: {file_path}")
+            
+            pixmap = QPixmap(file_path)
+            if pixmap.isNull():
+                print(f"Failed to load image: {file_path}")
+                continue
+
+            if col == 4:  # Move to the next row after 4 images
+                col = 0
+                row += 1
+
+            frame = QFrame()
+            frame.setMinimumSize(260, 260)
+            frame.setMaximumSize(260, 260)
+            
+            layout_frame = QVBoxLayout()
+            button = QPushButton()
+            button.setMinimumSize(250, 250)
+            button.setMaximumSize(250, 250)
+            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            icon = QIcon(pixmap)
+            button.setIcon(icon)
+            button.setIconSize(QtCore.QSize(250, 250))
+            
+            layout_frame.addWidget(button)
+            frame.setLayout(layout_frame)
+            
+            layout.addWidget(frame, row, col, 1, 1)
+            col += 1
+
+        # Ensure frame_galery is properly configured
+        if not hasattr(self, 'frame_galery') or not self.frame_galery:
+            self.frame_galery = QFrame(self)
+            main_layout = QVBoxLayout(self.frame_galery)
+            self.frame_galery.setLayout(main_layout)
+        else:
+            main_layout = self.frame_galery.layout()
+
+        # Clear existing layout from frame_galery
+        while main_layout.count():
+            item = main_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+        # Add the scroll area to the frame_galery
+        main_layout.addWidget(scroll_area)
+
+
+    def depuracion(self):
+        global _FLAG_CONECT
+
+        message=f"{self.ui.textEdit.toPlainText()}"
+        
+        try:
+            # Enviar datos
+            print(f"Enviando: {message}")
+            self._VAR_socketClient.sendall(pickle.dumps(message))
+            # Buscar respuesta
+            data = None
+            data = self._VAR_socketClient.recv(4096)
+            print(f"La data del depurador es: {data}")
+            data = pickle.loads(data)
+
+            if data:
+
+                
+                print(f"Recibido: {data}")
+                data_n=f'{data}'
+                self.ui.label_37.setText(data_n)
+                _FLAG_CONECT = False
+
+            else:
+                _FLAG_CONECT = False
+                self.ui.label_37.setText("Es none")
+                print("Es None")
+        except IndexError:
+            print("No llegó un dato anguloso")
+
+        except:
+            print("Cerrando socket")
+            self._VAR_socketClient.close()
+            _FLAG_CONECT = False
+    def initialize_map_frames(self):
+        for index, row in self.map_df.iterrows():
+            name = row['name']
+            image_path = row['photo']
+            area = row['area']
+            self.create_map_frame(name,area,image_path)
+    def create_map_frame(self, name, area ,image_path):
+        frame = QFrame()
+        frame.setMinimumSize(260, 350)
+        frame.setMaximumSize(260, 350)
+
+        layout = QVBoxLayout()
+        button = QPushButton()
+        button.setMinimumSize(250, 250)
+        button.setMaximumSize(250, 250)
+        pixmap = QPixmap(image_path)
+        pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        icon = QIcon(pixmap)
+        button.setIcon(icon)
+        button.setIconSize(QtCore.QSize(250, 250))
+
+        label_name = QLabel(str(name))  # Convertir a str si es necesario
+        label_area = QLabel(str(area))  # Convertir a str si es necesario
+        
+        font = QFont()
+        font.setFamily('MS Shell Dlg 2')
+        font.setPointSize(14)
+        
+        label_name.setFont(font)
+        label_area.setFont(font)
+        
+        label_name.setStyleSheet("color: white; text-align: center;")
+        label_area.setStyleSheet("color: white; text-align: center;")
+        label_name.setAlignment(QtCore.Qt.AlignCenter)
+        label_area.setAlignment(QtCore.Qt.AlignCenter)
+        
+        # Set maximum width for labels
+        label_name.setWordWrap(True)
+        label_area.setWordWrap(True)
+
+        layout.addWidget(button)
+        layout.addWidget(label_name)
+        layout.addWidget(label_area)
+        frame.setLayout(layout)
+        button.clicked.connect(lambda checked, user=name, area_map=area,img=image_path: self.GoGeneral(user,area_map, img))
+        # Insert frame to the left of frame_mapgen
+        layout_usuarios = self.ui.frame_mapas_list.layout()
+        index_create = layout_usuarios.indexOf(self.ui.frame_mapgen)
+        layout_usuarios.insertWidget(index_create, frame)
+
+
+    def GoGenerarReport(self):
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 100000) #Contiene frame_left_up y frame_left_down
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(10000,10000) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(10000, 10000)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+
+
+
+    def GoEstadisticas(self):
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 100000) #Contiene frame_left_up y frame_left_down
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(10000,10000) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(10000, 10000)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+    # Funcion que distribuye funcion de posicion, control y angulos
+    def distribuir_secret(self):
+
+        
+        self.movie = QMovie("iconos\marcianito.gif") 
+        self.ui.label_gif.setMovie(self.movie)
+        self.ui.label_gif.setAlignment(Qt.AlignCenter)
+        self.movie.setScaledSize(QSize().scaled(2300, 780, Qt.KeepAspectRatio))
+        #self.label_gif.setMaximumSize(100000000, 10000000) 
+        self.movie.start() 
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 10000) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(2000,1240) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(0,0) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(100000,100000)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+    #################################################################
+    def distribuir_arm(self):
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 1100) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(2000,1240) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(0,0) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(10000, 10000)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+    #################################################################
+
+    def distribuir_general(self):
+        global FLAG_MAPA
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(0, 0) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(10000, 10000) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(0,0) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(10000,10040)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+        if not FLAG_MAPA:
+            self.ui.frame_mapa.setMaximumSize(100000, 100000)
+            self.ui.frame_general.setMaximumSize(0, 0)
+            self.ui.frame_general_auto.setMaximumSize(0, 0)
+        else:
+            
+            # self.btn_mapa2.setIcon(icon)
+            # self.btn_mapa2.setIconSize(QtCore.QSize(400, 250))
+            if not FLAG_AUTO:
+                self.ui.frame_mapa.setMaximumSize(0, 0)
+                self.ui.frame_general.setMaximumSize(10000, 10000)
+                self.ui.frame_general_auto.setMaximumSize(0, 0)
+            else:
+                self.ui.frame_mapa.setMaximumSize(0, 0)
+                self.ui.frame_general.setMaximumSize(0, 0)
+                self.ui.frame_general_auto.setMaximumSize(10000, 10000)
+                # self.btn_VisionCamara1_3.lower()
+                # self.setLayout(self.frame_cam_map)
+                # self.frame_cam_map().removeWidget(self.btn_VisionCamara1_3)
+                # self.frame_cam_map().removeWidget(self.btn_map)
+                # self.frame_cam_map().addWidget(self.btn_map)
+                # self.frame_cam_map().addWidget(self.btn_VisionCamara1_3)
+
+       
+    #################################################################
+
+    def distribuir_document(self):
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 1100) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(10000,10000) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(100000, 100000)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+    #################################################################
+    # Funcion que distribuye funcion de camara
+
+    def distribuir_posicion(self):
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 1100) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(2000,1240) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(0,0) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(10000,10040)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+###############################################
+
+    def GoGeneral(self,name,area_map, img):
+        global FLAG_MAPA, MAP_NAME,MAP_AREA,MAP_PIC
+        FLAG_MAPA=True
+        MAP_NAME=name
+        MAP_AREA=area_map
+        MAP_PIC=img
+
+        pixmap = QPixmap(MAP_PIC)
+        pixmap = pixmap.scaled(400, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        icon = QIcon(pixmap)
+        self.ui.btn_mapa.setIcon(icon)
+        self.ui.btn_mapa.setIconSize(QtCore.QSize(400, 250))
+        pixmap = QPixmap(MAP_PIC)
+        pixmap = pixmap.scaled(400, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        icon = QIcon(pixmap)
+        self.ui.btn_mapa_2.setIcon(icon)
+        self.ui.btn_mapa_2.setIconSize(QtCore.QSize(400, 250))
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(0, 0) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(10000, 10000) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(0,0) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_general.setMaximumSize(10000, 10000)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(10000,10040)
+        self.ui.frame_arch.setMaximumSize(0, 0)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+    # Funcion que distribuye funcion de archivos
+
+    def distribuir_archivos(self):
+
+        #Frames Generales 
+        self.ui.main_body_left.setMaximumSize(10000, 1100) #Contiene frame_left_up
+        self.ui.main_frames_login.setMaximumSize(0, 0) #Contiene a frame_general y a frame_mapa
+        self.ui.frame_left_up.setMaximumSize(0,0) #Contiene a frame_arm, frame_position y frame_secret
+        self.ui.frame_left_down.setMaximumSize(100000,10000) #Contiene a frame_arch, frame_documents y derivados del reporte
+
+        #Frames Ventanas
+        self.ui.frame_first.setMaximumSize(0,0)
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_secret.setMaximumSize(0,0)
+        self.ui.frame_general.setMaximumSize(0, 0)
+        self.ui.frame_arm.setMaximumSize(0, 0)
+        self.ui.frame_posicion.setMaximumSize(0,0)
+        self.ui.frame_arch.setMaximumSize(10000, 10000)
+
+        #Frames Reportes
+        self.ui.frame_menu_report.setMaximumSize(0, 0)
+        self.ui.frame_estadisticas.setMaximumSize(0, 0)
+        self.ui.frame_generar_report.setMaximumSize(0, 0)
+
+        #Labels Camaras
+        # self.ui.VisionCamara1.setMinimumSize(960,570)
+        # self.ui.VisionCamara1.setMaximumSize(960,570)
+        # self.ui.VisionCamara2.setMinimumSize(250, 150)
+        # self.ui.VisionCamara2.setMaximumSize(250, 150)
+
+        self.load_images_galery()
+    # Funcion para reiniciar distribucion de espacios
+    
     @pyqtSlot(np.ndarray)
     def update_image1(self, cv_img):
         """Updates the image_label with a new opencv image"""
@@ -846,6 +1356,11 @@ class GUI(QMainWindow):
         print("update image 3")
         self.ui.label_camPost.setPixmap(pixMap)
         self.ui.label_camPost.setAlignment(Qt.AlignCenter)
+   
+        scaledImage1 = q_image.scaled(self.ui.label_camPost.size(), aspectRatioMode=Qt.KeepAspectRatio)
+        pixMap1=QPixmap.fromImage(scaledImage1)
+        self.ui.PTZ_Vision.setPixmap(pixMap1)
+        self.ui.PTZ_Vision.setAlignment(Qt.AlignCenter)
     
     def closeEvent(self, event):
         event.accept()

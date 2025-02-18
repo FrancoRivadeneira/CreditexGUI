@@ -39,10 +39,12 @@ ROBOT_LIST_COMMANDS=[ ["$OAX3J0A",[1,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0],"Avanza
               ["$OAX3JBE",[0,0,0,1,0, 0,0,0,0,0, 0,0,1,0,0, 0,0],"Boton Emergencia"]] ## CAMBIAR ESTO es Y + FlechaIzquierda
 # Aplicamos transpuesta a la lista de comandos para hacer uso del built function "index"
 ROBOT_LIST_COMMANDS = [list(x) for x in zip(*ROBOT_LIST_COMMANDS)]
+
 # joystick
 EVENT_TYPE_LEFT_TRIGGER = 4
 if sys.platform == "linux":
     EVENT_TYPE_LEFT_TRIGGER = 2
+EVENT_TYPE_RIGHT_TRIGGER = 5
 
 exit_flag = threading.Event()
 class JoystickControlWiFi(QThread):
@@ -136,17 +138,28 @@ class JoystickControlWiFi(QThread):
                     if event.type == JOYAXISMOTION:
                         # En el caso de los triggers, se analiza que tanto se ha presionado
                         # va de un rango de -0.99 (no presionado) a 0.99 (totalmente presionado)
+                        print(event.axis)
                         if event.axis == EVENT_TYPE_LEFT_TRIGGER:
                             if (event.value < 0.99):
                                 buttonList[idTrigger_Left] = 0
                             else:
                                 buttonList[idTrigger_Left] = 1
-                        if event.axis == 5:
+                        if event.axis == EVENT_TYPE_RIGHT_TRIGGER:
                             if (event.value < 0.99):
                                 # Se actualiza la variable correspondiente
                                 buttonList[idTrigger_Right] = 0
                             else:
                                 buttonList[idTrigger_Right] = 1
+                        if event.axis == 3:
+                            eje_y_derecho = event.value  # Obtiene el valor del eje (-1 a 1)
+
+                            # Ajustar el contador según la inclinación del joystick
+                            if eje_y_derecho < -0.5:  # Movimiento hacia arriba
+                                contador += 1
+                            elif eje_y_derecho > 0.5:  # Movimiento hacia abajo
+                                contador -= 1
+
+                            print(f"Eje Y derecho: {eje_y_derecho:.2f} | Contador: {contador}")
                 """ Obtenemos el comando """
                 if buttonList in ROBOT_LIST_COMMANDS[1]:
                     # Busca el elemento de orden del buttonlist

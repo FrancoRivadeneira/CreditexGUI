@@ -545,7 +545,7 @@ class GUI(QMainWindow):
             if comprobar == '$OAX1s':   ###  $OAX1jb145s15l0m11r0d1p1
                 print(f"Comprobar es {comprobar}")
                 bat = tramaSensores.find('b')
-                speed = tramaSensores.find('s')
+                speed = tramaSensores.find('v')
                 lights = tramaSensores.find('l')
                 motors = tramaSensores.find('m')
                 lidar= tramaSensores.find('n')

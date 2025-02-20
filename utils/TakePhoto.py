@@ -11,7 +11,7 @@ import subprocess
 import requests
 
 ## ROBOT INFO (RASPBERRY REMOTE)
-ROBOT_TERRESTRE_IP_ADDR=  "10.100.110.26" #"192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR=  "192.168.78.63" #"192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME= "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 puerto = 22  # Puerto por defecto de SSH
@@ -25,7 +25,7 @@ ROBOT_TERRESTRE_RANGO_BATERIA=25-22
 
 class TakePhoto:
     # Señal para actualizar el estado de la conexión en la interfaz principal
-    def __init__(self, base_url, save_folder="fotos"):
+    def __init__(self, base_url, save_folder="imagenes"):
         self.base_url = base_url
         self.save_folder = save_folder
         os.makedirs(save_folder, exist_ok=True)  # Crear la carpeta si no existe

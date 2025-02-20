@@ -14,8 +14,9 @@ class PTZ(QThread):
         super().__init__(None)
         self._FLAG_run = True
         self.falseParent = parent
-        self.url = "http://10.100.110.26:1234/ptz_stream"
-        self.control_url = "http://10.100.110.26:1234"
+        self.url = "http://192.168.78.63:1234/ptz_stream"
+        self.control_url = "http://192.168.78.63:1234/ptz_control"
+        
     
     def run(self):
         try:
@@ -46,16 +47,29 @@ class PTZ(QThread):
         self.wait()
     
     def send_control_command(self, command):
-        """Envía un comando POST vacío al endpoint especificado"""
+        """Envía un comando POST con los parámetros requeridos al endpoint especificado"""
         try:
-            endpoint = f"{self.control_url}/{command}"
-            response = requests.post(endpoint)
+            endpoint = self.control_url
+            data = {}
+
+            if command in ["up", "down", "left", "right"]:
+                data["direction"] = command
+            elif command in ["zoom_in", "zoom_out"]:
+                data["zoom"] = command
+            elif command == "stop":
+                data["zoom"] = command
+                data["direction"] = command
+            print(f"Enviando comando {command} a {endpoint}")
+            response = requests.post(endpoint, data=data)
+            
+
             if response.status_code == 200:
                 logging.info(f"Comando {command} enviado con éxito")
             else:
                 logging.error(f"Error al enviar comando {command}, código de estado: {response.status_code}")
         except Exception as e:
             logging.error(f"Error al enviar comando {command}: {e}")
+
     
     def zoom_in(self):
         self.send_control_command("zoom_in")
@@ -66,7 +80,6 @@ class PTZ(QThread):
     
     def move_right(self):
         self.send_control_command("right")
-    
     def move_left(self):
         self.send_control_command("left")
     
@@ -74,5 +87,8 @@ class PTZ(QThread):
         self.send_control_command("up")
     
     def move_down(self):
-        self.send_control_command("ptz_down")
+        self.send_control_command("down")
         print("Bajando PTZ")
+    def stop(self):
+        self.send_control_command("stop")
+        print("Stopeando PTZ")

@@ -7,7 +7,7 @@ from pygame.locals import *    ###
 import subprocess
 
 ## ROBOT INFO (RASPBERRY REMOTE)
-ROBOT_TERRESTRE_IP_ADDR=  "10.100.110.26" #"192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR=  "192.168.78.63" #"192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME= "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 puerto = 22  # Puerto por defecto de SSH

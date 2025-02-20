@@ -20,6 +20,7 @@ from utils.HoraUpdater import HoraUpdater
 from utils.DateUpdater import DateUpdater
 from utils.TakePhoto import TakePhoto
 from utils.PTZ import PTZ
+from utils.FullScreenImage import FullScreenImage
 from MainWindow import Ui_MainWindow
 
 ## Library for PyQt
@@ -27,6 +28,8 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import *  ###
 from PyQt5.QtCore import *     ###
 from PyQt5.QtGui import *      ###
+from PyQt5.QtCore import Qt, QSize  # Agregar QSize a la importación
+
 import cv2 ## For Camera visualization  ###
 import sys 
 import os 
@@ -79,7 +82,7 @@ if sys.platform=="linux":
 
 ## ROBOT INFO (RASPBERRY REMOTE)
 # ROBOT_TERRESTRE_IP_ADDR=  "192.168.1.166" #"192.168.1.166""192.168.1.133"
-ROBOT_TERRESTRE_IP_ADDR=  "10.100.110.26" #"192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR=  "192.168.78.63" #"192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME= "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 puerto = 22  # Puerto por defecto de SSH
@@ -359,7 +362,27 @@ class GUI(QMainWindow):
         self.ui.close_window_button.clicked.connect(lambda: self.close())
         self.ui.btn_toggle.clicked.connect(self.TOGGLE_MODE)
         self.ui.btn_test.clicked.connect(self.depuracion)
-        self.ui.btn_ptz_down.clicked.connect(self._THREAD_updateCamera3.move_down)
+
+
+        self.ui.btn_ptz_down.pressed.connect(self._THREAD_updateCamera3.move_down)
+        self.ui.btn_ptz_down.released.connect(self._THREAD_updateCamera3.stop)
+
+        self.ui.btn_ptz_right.pressed.connect(self._THREAD_updateCamera3.move_right)
+        self.ui.btn_ptz_right.released.connect(self._THREAD_updateCamera3.stop)
+
+        self.ui.btn_ptz_left.pressed.connect(self._THREAD_updateCamera3.move_left)
+        self.ui.btn_ptz_left.released.connect(self._THREAD_updateCamera3.stop)
+
+        self.ui.btn_ptz_up.pressed.connect(self._THREAD_updateCamera3.move_up)
+        self.ui.btn_ptz_up.released.connect(self._THREAD_updateCamera3.stop)
+
+        self.ui.btn_zoom_in.pressed.connect(self._THREAD_updateCamera3.zoom_in)
+        self.ui.btn_zoom_in.released.connect(self._THREAD_updateCamera3.stop)
+
+        self.ui.btn_zoom_out.pressed.connect(self._THREAD_updateCamera3.zoom_out)
+        self.ui.btn_zoom_out.released.connect(self._THREAD_updateCamera3.stop)
+
+
 
 
         """ Modos la GUI """
@@ -543,7 +566,7 @@ class GUI(QMainWindow):
             comprobar = tramaDatos[0:6]
             tramaSensores=tramaDatos[6:]
             if comprobar == '$OAX1s':   ###  $OAX1jb145s15l0m11r0d1p1
-                print(f"Comprobar es {comprobar}")
+                print(f"Comprobar es {tramaSensores}")
                 bat = tramaSensores.find('b')
                 speed = tramaSensores.find('v')
                 lights = tramaSensores.find('l')
@@ -625,10 +648,11 @@ class GUI(QMainWindow):
                         eval(command)
                 if (encoder != -1):
                     valorEncoder = tramaSensores[(encoder+1):-1]
-                    if valorEncoder.isnumeric():
-                        valorEncoder = int(valorEncoder)
-                        command = f"self.ui.label_altura.setText('{valorEncoder: 0} cm')"
-                        eval(command)
+                    print(f"Valor del encoder: {valorEncoder}")
+                    # valorEncoder = int(valorEncoder)
+                    command = f"self.ui.label_altura.setText('{valorEncoder} cm')"
+                    eval(command)
+                    # if valorEncoder.isnumeric():
                 
                             
                     
@@ -709,8 +733,8 @@ class GUI(QMainWindow):
     
     def TAKE_PHOTO(self):
         print("Foto tomada")
-        self.TakePhoto=TakePhoto(base_url="http://10.100.110.26:1234")
-        self.TakePhoto.download_photo(endpoint="/ptz_snapshot",filename="Fotoxd.jpg")
+        self.TakePhoto=TakePhoto(base_url="http://192.168.78.63:1234")
+        self.TakePhoto.download_photo(endpoint="/ptz_snapshot",filename="Fotoxd.bmp")
 
 
     def BUTTON_STOP_pressed(self):
@@ -850,93 +874,94 @@ class GUI(QMainWindow):
                 self._VAR_socketClient.sendall(pickle.dumps("$OAX2A0"))
             FLAG_AUTO=False
     
-    def load_images_galery(self,folder_path="imagenes",isAlbum=False):
+    def toggle_image_size(self, button):
+        full_screen_window = FullScreenImage(button.image_path, self)
+        full_screen_window.exec_()
+
+    def load_images_galery(self, folder_path="imagenes", isAlbum=False):
         if not isAlbum:
             self.ui.btn_fotos.setStyleSheet("QPushButton { color: black; background-color: #EA6C36; border-radius:20px; }")
             self.ui.btn_album.setStyleSheet("QPushButton { color: white; background-color: #0F0F0F; border-radius:20px; }")
         else:
             self.ui.btn_album.setStyleSheet("QPushButton { color: black; background-color: #EA6C36; border-radius:20px; }")
             self.ui.btn_fotos.setStyleSheet("QPushButton { color: white; background-color: #0F0F0F; border-radius:20px; }")
-        # Check if the folder_path exists
+
         if not os.path.exists(folder_path):
-            print(f"The folder {folder_path} does not exist.")
+            print(f"La carpeta {folder_path} no existe.")
             return
 
-        # Create a scroll area
-        scroll_area = QScrollArea(self)
+        scroll_area = QScrollArea(self.ui.frame_galery)
         scroll_area.setWidgetResizable(True)
 
-        # Create a container widget and set it as the widget for the scroll area
         container_widget = QWidget()
-        scroll_area.setWidget(container_widget)
-
-        # Create a grid layout for the container widget
         layout = QGridLayout(container_widget)
         container_widget.setLayout(layout)
+        scroll_area.setWidget(container_widget)
 
-        # Recursive function to find all image files in the folder and its subfolders
         def find_image_files(folder):
             image_files = []
-            for root, dirs, files in os.walk(folder):
+            for root, _, files in os.walk(folder):
                 for file in files:
-                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    if file.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp")):
                         image_files.append(os.path.join(root, file))
             return image_files
 
-        # Find all image files in the folder and its subfolders
         image_files = find_image_files(folder_path)
 
         row, col = 0, 0
         for i, file_path in enumerate(image_files):
-            print(f"Processing file: {file_path}")
-            
+            print(f"Procesando archivo: {file_path}")
+
             pixmap = QPixmap(file_path)
             if pixmap.isNull():
-                print(f"Failed to load image: {file_path}")
+                print(f"No se pudo cargar la imagen: {file_path}")
                 continue
 
-            if col == 4:  # Move to the next row after 4 images
+            if col == 4:
                 col = 0
                 row += 1
 
             frame = QFrame()
             frame.setMinimumSize(260, 260)
             frame.setMaximumSize(260, 260)
-            
+
             layout_frame = QVBoxLayout()
             button = QPushButton()
             button.setMinimumSize(250, 250)
             button.setMaximumSize(250, 250)
-            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+
+            pixmap = pixmap.scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon = QIcon(pixmap)
             button.setIcon(icon)
-            button.setIconSize(QtCore.QSize(250, 250))
-            
+            button.setIconSize(QSize(250, 250))
+
+            button.image_path = file_path
+            button.clicked.connect(lambda checked, btn=button: self.toggle_image_size(btn))
+
             layout_frame.addWidget(button)
             frame.setLayout(layout_frame)
-            
             layout.addWidget(frame, row, col, 1, 1)
             col += 1
 
-        # Ensure frame_galery is properly configured
-        if not hasattr(self, 'frame_galery') or not self.frame_galery:
-            self.frame_galery = QFrame(self)
-            main_layout = QVBoxLayout(self.frame_galery)
-            self.frame_galery.setLayout(main_layout)
+        if not hasattr(self.ui, 'frame_galery') or not self.ui.frame_galery:
+            self.ui.frame_galery = QFrame(self)
+            main_layout = QVBoxLayout(self.ui.frame_galery)
+            self.ui.frame_galery.setLayout(main_layout)
         else:
-            main_layout = self.frame_galery.layout()
+            main_layout = self.ui.frame_galery.layout()
 
-        # Clear existing layout from frame_galery
         while main_layout.count():
             item = main_layout.takeAt(0)
             widget = item.widget()
             if widget:
                 widget.deleteLater()
 
-        # Add the scroll area to the frame_galery
         main_layout.addWidget(scroll_area)
 
 
+    # Función para cambiar el tamaño de la imagen
+    
+    
     def depuracion(self):
         global _FLAG_CONECT
 
@@ -1333,6 +1358,11 @@ class GUI(QMainWindow):
         pixMap=QPixmap.fromImage(scaledImage)
         self.ui.label_camMain.setPixmap(pixMap)
         self.ui.label_camMain.setAlignment(Qt.AlignCenter)
+
+        scaledImage1 = q_image.scaled(self.ui.PTZ_Vision.size(), aspectRatioMode=Qt.KeepAspectRatio)
+        pixMap1=QPixmap.fromImage(scaledImage1)
+        self.ui.PTZ_Vision.setPixmap(pixMap1)
+        self.ui.PTZ_Vision.setAlignment(Qt.AlignCenter)
     
     @pyqtSlot(np.ndarray)
     def update_image2(self, cv_img):
@@ -1357,10 +1387,7 @@ class GUI(QMainWindow):
         self.ui.label_camPost.setPixmap(pixMap)
         self.ui.label_camPost.setAlignment(Qt.AlignCenter)
    
-        scaledImage1 = q_image.scaled(self.ui.label_camPost.size(), aspectRatioMode=Qt.KeepAspectRatio)
-        pixMap1=QPixmap.fromImage(scaledImage1)
-        self.ui.PTZ_Vision.setPixmap(pixMap1)
-        self.ui.PTZ_Vision.setAlignment(Qt.AlignCenter)
+        
     
     def closeEvent(self, event):
         event.accept()

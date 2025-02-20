@@ -141,21 +141,21 @@ class JoystickControl(QThread):
                                 buttonList[idTrigger_Right]=0 #Se actualiza la variable correspondiente
                             else:
                                 buttonList[idTrigger_Right]=1
-                        # if event.axis == 3:
+                        if event.axis == 3:
                             
-                        #     # Ajustar el contador según la inclinación del joystick
-                        #     if event.value < -0.5:  # Movimiento hacia arriba
-                        #         actuator_pos += 1
-                        #         buttonList[17]=1
-                        #         buttonList[18]=0
+                            # Ajustar el contador según la inclinación del joystick
+                            if event.value < -0.5:  # Movimiento hacia arriba
+                                actuator_pos += 1
+                                buttonList[17]=1
+                                buttonList[18]=0
                                                       
-                        #     elif event.value > 0.5:  # Movimiento hacia abajo
-                        #         actuator_pos -= 1
-                        #         buttonList[17]=0
-                        #         buttonList[18]=1
-                        #     else:
-                        #         buttonList[17]=0
-                        #         buttonList[18]=0
+                            elif event.value > 0.5:  # Movimiento hacia abajo
+                                actuator_pos -= 1
+                                buttonList[17]=0
+                                buttonList[18]=1
+                            else:
+                                buttonList[17]=0
+                                buttonList[18]=0
                             # global comandoList
                             # comandoList[0][13] = f"$OAX4G{str(actuator_pos).zfill(3)}"
                             # print(comandoList[13][0])

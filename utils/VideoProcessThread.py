@@ -1,3 +1,4 @@
+import numpy as np
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -6,10 +7,10 @@ import pygame
 import cv2
 pygame.init()
 pygame.joystick.init()
-import numpy as np
 COORDINATES = []
 
-url3 = "http://192.168.68.102:8070/?action=stream"  # Brazo
+url3 = "http://192.168.68.200:8070/?action=stream"  # Brazo
+
 
 class VideoProcessThread(QThread):
     update_frame = pyqtSignal(QPixmap)
@@ -36,7 +37,7 @@ class VideoProcessThread(QThread):
             if ret:
                 image_with_rectangle = np.copy(frame)
                 # Dibujar el rectángulo en el frame
-                print(COORDINATES)  
+                print(COORDINATES)
                 for data in COORDINATES:
                     x1 = data["x1"]
                     y1 = data["y1"]

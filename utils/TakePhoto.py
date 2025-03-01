@@ -1,36 +1,21 @@
-## Library for PyQt
-from PyQt5.QtWidgets import *  ###
-from PyQt5.QtCore import *     ###
-from PyQt5.QtGui import *      ###
-import sys 
+# Library for PyQt
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 import cv2
 import os
 import numpy as np
-from pygame.locals import *    ###
-import subprocess
+from pygame.locals import *
 import requests
 
-## ROBOT INFO (RASPBERRY REMOTE)
-ROBOT_TERRESTRE_IP_ADDR=  "192.168.78.63" #"192.168.1.166""192.168.1.133"
-ROBOT_TERRESTRE_USERNAME= "pi"
-ROBOT_TERRESTRE_PASSWORD = "raspberry"
-puerto = 22  # Puerto por defecto de SSH
-ROBOT_TERRESTRE_PORT=8666
-ROBOT_TERRESTRE_CAMS_PORT_LIST=[8080,8085]
-ROBOT_TERRESTRE_FRAME_RATE=10
-ROBOT_TERRESTRE_WIDTH_FRAME_CAM=640
-ROBOT_TERRESTRE_HEIGHT_FRAME_CAM=480
-ROBOT_TERRESTRE_MIN_VALOR_BATERIA=22
-ROBOT_TERRESTRE_RANGO_BATERIA=25-22
 
 class TakePhoto:
     # Señal para actualizar el estado de la conexión en la interfaz principal
     def __init__(self, base_url, save_folder="imagenes"):
         self.base_url = base_url
         self.save_folder = save_folder
-        os.makedirs(save_folder, exist_ok=True)  # Crear la carpeta si no existe
-
-  
+        # Crear la carpeta si no existe
+        os.makedirs(save_folder, exist_ok=True)
 
     def download_photo(self, endpoint, filename="foto.jpg"):
         """Envía una solicitud GET al servidor y guarda la imagen recibida."""

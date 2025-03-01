@@ -176,7 +176,7 @@ class JoystickControl(QThread):
                     oldCommand=command
                     self._SIGNAL_command.emit(command)
                     time.sleep(0.02)
-                clock.tick(200) ## Genera delay constante
+                clock.tick(00) ## Genera delay constante
             except KeyboardInterrupt:
                 logging.info("cerrando bucle")
                 break

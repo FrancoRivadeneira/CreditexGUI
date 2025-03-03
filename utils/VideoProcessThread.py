@@ -9,7 +9,7 @@ pygame.init()
 pygame.joystick.init()
 COORDINATES = []
 
-url3 = "http://192.168.68.200:8070/?action=stream"  # Brazo
+url3 = "http://192.168.68.201:8070/?action=stream"  # Brazo
 
 
 class VideoProcessThread(QThread):

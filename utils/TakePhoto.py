@@ -1,12 +1,11 @@
-# Library for PyQt
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 import cv2
 import os
 import numpy as np
-from pygame.locals import *
 import requests
+import logging
+import time
+
+logger = logging.getLogger(__name__)
 
 
 class TakePhoto:
@@ -19,11 +18,12 @@ class TakePhoto:
 
     def download_photo(self, endpoint, filename="foto.jpg"):
         """Envía una solicitud GET al servidor y guarda la imagen recibida."""
+        start = time.perf_counter_ns()
+
         url = f"{self.base_url}{endpoint}"
-        print(url)
 
         try:
-            response = requests.get(url, stream=True)  # Cambiado a GET
+            response = requests.get(url)  # Cambiado a GET
             response.raise_for_status()
 
             # Convertir los bytes de la respuesta en una imagen
@@ -34,6 +34,8 @@ class TakePhoto:
             file_path = os.path.join(self.save_folder, filename)
             cv2.imwrite(file_path, frame)
 
-            print(f"Frame guardado en {file_path}")
+            stop = time.perf_counter_ns()
+            logging.info(f"Foto guardado en {file_path} en {(stop-start)/10e6} ms")  # noqa
+
         except requests.exceptions.RequestException as e:
-            print(f"Error al descargar el frame: {e}")
+            logging.exception(f"Error al descargar el frame: {e}")

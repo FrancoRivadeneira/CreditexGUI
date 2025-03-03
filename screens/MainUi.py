@@ -36,13 +36,13 @@ pygame.joystick.init()
 # from utils.VideoStreamThread import VideoStreamThread as VideoStreamThread
 exit_flag = threading.Event()
 
-url1_check = "http://192.168.68.200:8080"
-url2_check = "http://192.168.68.200:8085"
-url3_check = "http://192.168.68.200:8070"
+url1_check = "http://192.168.68.201:8080"
+url2_check = "http://192.168.68.201:8085"
+url3_check = "http://192.168.68.201:8070"
 
-url = "http://192.168.68.200:8080/?action=stream"
-url2 = "http://192.168.68.200:8085/?action=stream"
-url3 = "http://192.168.68.200:8070/?action=stream"  # Brazo
+url = "http://192.168.68.201:8080/?action=stream"
+url2 = "http://192.168.68.201:8085/?action=stream"
+url3 = "http://192.168.68.201:8070/?action=stream"  # Brazo
 
 
 COORDINATES = []
@@ -67,7 +67,7 @@ SPEED = 0
 
 """ DATOS DEL HARDWARE """
 # ROBOT INFO (RASPBERRY REMOTE)
-IP_ADDR = "192.168.68.200"  # NUC
+IP_ADDR = "192.168.68.201"  # NUC
 IP_ADDR_B = "192.168.0.14"  # "192.168.0.14"
 IP_ADDR_CAM = "192.168.23.176"
 PORT = 8666

@@ -17,7 +17,7 @@ class jsonReception(QThread):
 
     def run(self):  # Hilo
         # URL del JSON
-        # url = 'http://192.168.68.200:5000/lidar'
+        # url = 'http://192.168.68.201:5000/lidar'
         url = 'http://'+"192.168.1.4"+":"+"8080"
         while self._FLAG_run:
             try:

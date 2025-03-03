@@ -41,6 +41,7 @@ import pickle
 # import paramiko
 # import pyqtgraph.opengl as gl  ###
 # import pyqtgraph as pg
+import datetime
 
 FLAG_AUTO = False
 FLAG_MAPA = False
@@ -80,7 +81,7 @@ if sys.platform == "linux":
 
 # ROBOT INFO (RASPBERRY REMOTE)
 # ROBOT_TERRESTRE_IP_ADDR=  "192.168.1.166" #"192.168.1.166""192.168.1.133"
-ROBOT_TERRESTRE_IP_ADDR = "192.168.68.200"  # "192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR = "192.168.68.201"  # "192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME = "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 ROBOT_TERRESTRE_SSH_PORT = 22  # Puerto por defecto de SSH
@@ -166,6 +167,15 @@ class GUI(QMainWindow):
         # Objetos detector internet:
         self._Var_valueCajaSensores = 0
         self._Var_valueRobot = 0
+
+        pixmap = QPixmap("iconos/Toggle.svg")
+        pixmap = pixmap.scaled(60, 60,
+                               QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                               QtCore.Qt.TransformationMode.SmoothTransformation)
+        icon = QIcon(pixmap)
+        self.ui.btn_toggle.setIcon(icon)
+        self.ui.btn_toggle.setIconSize(QtCore.QSize(60, 60))
+        del pixmap, icon
 
         """  Realizamos el conteo de videos en la computadora """
         temp_videosFilePath = os.path.join(MY_FILEPATH, "videos")
@@ -735,11 +745,13 @@ class GUI(QMainWindow):
                 "<font color='black'>>Los sensores todavia no estan emitiendo datos...</font>")
 
     def TAKE_PHOTO(self):
-        logging.info("Foto tomada")
+        logging.info("Inicio de toma de fotos")
         self.TakePhoto = TakePhoto(
             base_url=f"http://{ROBOT_TERRESTRE_IP_ADDR}:1234")
-        self.TakePhoto.download_photo(
-            endpoint="/ptz_snapshot", filename="Fotoxd.bmp")
+        current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"Foto_{current_time}.bmp"
+        self.TakePhoto.download_photo(endpoint="/ptz_snapshot",
+                                      filename=filename)
 
     def BUTTON_STOP_pressed(self):
         if (self._FLAG_Habilitar_Grabacion == 1):
@@ -868,8 +880,9 @@ class GUI(QMainWindow):
         if not FLAG_AUTO:
             self.ui.label_mode.setText("Modo Autonomo")
             pixmap = QPixmap("iconos/automode.svg")
-            pixmap = pixmap.scaled(
-                60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(60, 60,
+                                   QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                   QtCore.Qt.TransformationMode.SmoothTransformation)
             icon = QIcon(pixmap)
             self.ui.btn_toggle.setIcon(icon)
             self.ui.btn_toggle.setIconSize(QtCore.QSize(60, 60))
@@ -882,8 +895,9 @@ class GUI(QMainWindow):
         else:
             self.ui.label_mode.setText("Modo Teleoperado")
             pixmap = QPixmap("iconos/Toggle.svg")
-            pixmap = pixmap.scaled(
-                60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(60, 60,
+                                   QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                   QtCore.Qt.TransformationMode.SmoothTransformation)
             icon = QIcon(pixmap)
             self.ui.btn_toggle.setIcon(icon)
             self.ui.btn_toggle.setIconSize(QtCore.QSize(60, 60))
@@ -1136,16 +1150,17 @@ class GUI(QMainWindow):
 
     def distribuir_secret(self):
 
-        self.movie = QMovie(r"iconos\marcianito.gif")
+        self.movie = QMovie(os.path.join("iconos", "marcianito.gif"))
         self.ui.label_gif.setMovie(self.movie)
-        self.ui.label_gif.setAlignment(Qt.AlignCenter)
-        self.movie.setScaledSize(QSize().scaled(2300, 780, Qt.KeepAspectRatio))
+        self.ui.label_gif.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.movie.setScaledSize(QSize().scaled(2300, 780,
+                                                Qt.AspectRatioMode.KeepAspectRatio))
         # self.label_gif.setMaximumSize(100000000, 10000000)
         self.movie.start()
 
         # Frames Generales
-        self.ui.main_body_left.setMaximumSize(
-            10000, 10000)  # Contiene frame_left_up
+        # Contiene frame_left_up
+        self.ui.main_body_left.setMaximumSize(10000, 10000)
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(0, 0)
         # Contiene a frame_arm, frame_position y frame_secret
@@ -1260,8 +1275,8 @@ class GUI(QMainWindow):
     def distribuir_document(self):
 
         # Frames Generales
-        self.ui.main_body_left.setMaximumSize(
-            10000, 1100)  # Contiene frame_left_up
+        # Contiene frame_left_up
+        self.ui.main_body_left.setMaximumSize(10000, 1100)
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(0, 0)
         # Contiene a frame_arm, frame_position y frame_secret
@@ -1293,8 +1308,8 @@ class GUI(QMainWindow):
     def distribuir_posicion(self):
 
         # Frames Generales
-        self.ui.main_body_left.setMaximumSize(
-            10000, 1100)  # Contiene frame_left_up
+        # Contiene frame_left_up
+        self.ui.main_body_left.setMaximumSize(10000, 1100)
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(0, 0)
         # Contiene a frame_arm, frame_position y frame_secret
@@ -1330,14 +1345,16 @@ class GUI(QMainWindow):
         MAP_PIC = img
 
         pixmap = QPixmap(MAP_PIC)
-        pixmap = pixmap.scaled(
-            400, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(400, 250,
+                               QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                               QtCore.Qt.TransformationMode.SmoothTransformation)
         icon = QIcon(pixmap)
         self.ui.btn_mapa.setIcon(icon)
         self.ui.btn_mapa.setIconSize(QtCore.QSize(400, 250))
         pixmap = QPixmap(MAP_PIC)
-        pixmap = pixmap.scaled(
-            400, 250, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(400, 250,
+                               QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                               QtCore.Qt.TransformationMode.SmoothTransformation)
         icon = QIcon(pixmap)
         self.ui.btn_mapa_2.setIcon(icon)
         self.ui.btn_mapa_2.setIconSize(QtCore.QSize(400, 250))
@@ -1374,8 +1391,8 @@ class GUI(QMainWindow):
     def distribuir_archivos(self):
 
         # Frames Generales
-        self.ui.main_body_left.setMaximumSize(
-            10000, 1100)  # Contiene frame_left_up
+        # Contiene frame_left_up
+        self.ui.main_body_left.setMaximumSize(10000, 1100)
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(0, 0)
         # Contiene a frame_arm, frame_position y frame_secret
@@ -1412,18 +1429,18 @@ class GUI(QMainWindow):
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
         height, width, channel = rgb_image.shape
         q_image = QImage(rgb_image.data, width, height,
-                         width * channel, QImage.Format_RGB888)
-        scaledImage = q_image.scaled(
-            self.ui.label_camMain.size(), aspectRatioMode=Qt.KeepAspectRatio)
+                         width * channel, QImage.Format.Format_RGB888)
+        scaledImage = q_image.scaled(self.ui.label_camMain.size(),
+                                     aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         pixMap = QPixmap.fromImage(scaledImage)
         self.ui.label_camMain.setPixmap(pixMap)
-        self.ui.label_camMain.setAlignment(Qt.AlignCenter)
+        self.ui.label_camMain.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        scaledImage1 = q_image.scaled(
-            self.ui.PTZ_Vision.size(), aspectRatioMode=Qt.KeepAspectRatio)
+        scaledImage1 = q_image.scaled(self.ui.PTZ_Vision.size(),
+                                      aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         pixMap1 = QPixmap.fromImage(scaledImage1)
         self.ui.PTZ_Vision.setPixmap(pixMap1)
-        self.ui.PTZ_Vision.setAlignment(Qt.AlignCenter)
+        self.ui.PTZ_Vision.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     @pyqtSlot(np.ndarray)
     def update_image2(self, cv_img):
@@ -1431,12 +1448,12 @@ class GUI(QMainWindow):
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
         height, width, channel = rgb_image.shape
         q_image = QImage(rgb_image.data, width, height,
-                         width * channel, QImage.Format_RGB888)
-        scaledImage = q_image.scaled(
-            self.ui.label_camAruco.size(), aspectRatioMode=Qt.KeepAspectRatio)
+                         width * channel, QImage.Format.Format_RGB888)
+        scaledImage = q_image.scaled(self.ui.label_camAruco.size(),
+                                     aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         pixMap = QPixmap.fromImage(scaledImage)
         self.ui.label_camAruco.setPixmap(pixMap)
-        self.ui.label_camAruco.setAlignment(Qt.AlignCenter)
+        self.ui.label_camAruco.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     @pyqtSlot(np.ndarray)
     def update_image3(self, cv_img):
@@ -1444,13 +1461,13 @@ class GUI(QMainWindow):
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
         height, width, channel = rgb_image.shape
         q_image = QImage(rgb_image.data, width, height,
-                         width * channel, QImage.Format_RGB888)
-        scaledImage = q_image.scaled(
-            self.ui.label_camPost.size(), aspectRatioMode=Qt.KeepAspectRatio)
+                         width * channel, QImage.Format.Format_RGB888)
+        scaledImage = q_image.scaled(self.ui.label_camPost.size(),
+                                     aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         pixMap = QPixmap.fromImage(scaledImage)
         # print("update image 3")
         self.ui.label_camPost.setPixmap(pixMap)
-        self.ui.label_camPost.setAlignment(Qt.AlignCenter)
+        self.ui.label_camPost.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def closeEvent(self, event):
         event.accept()
@@ -1473,10 +1490,9 @@ def waitForLoading():
     if not os.path.exists(temp_videosFilePath):
         # Creamos el directorio
         os.mkdir(temp_videosFilePath)
-        logging.info("Se ha creado el directorio: {}".format(
-            temp_videosFilePath))
+        logging.info(f"Se ha creado el directorio: {temp_videosFilePath}")
     else:
-        logging.info("Ya existe el directorio: {}".format(temp_videosFilePath))
+        logging.info(f"Ya existe el directorio: {temp_videosFilePath}")
 
     # try:
     #    """ Cargamos el archivo MESH robot """
@@ -1522,6 +1538,9 @@ def setUpGUI():
     # Cargar la imagen para el splash screen
     # import pics_rc
     splash_image = QPixmap("iconos/loadScreen.png")
+    splash_image = splash_image.scaled(800, 600,
+                                       QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                       QtCore.Qt.TransformationMode.SmoothTransformation)
     splash = QSplashScreen(splash_image)
     splash.show()
     _FLAG_continue = False

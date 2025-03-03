@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 import logging  # Libreria para info Logging
 from pygame.locals import *
 import paramiko
-ROBOT_TERRESTRE_IP_ADDR = "192.168.68.200"  # "192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR = "192.168.68.201"  # "192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME = "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 
@@ -29,7 +29,7 @@ class RobotReader(QThread):
                                          username=ROBOT_TERRESTRE_USERNAME,
                                          password=ROBOT_TERRESTRE_PASSWORD,
                                          timeout=10)
-                self.command = "bash /home/pi/robot_ejecucion/remoteRobot.sh"
+                self.command = "bash /home/pi/Robot_movil/remoteRobot.sh"
                 stdin, stdout, stderr = self.sshForRobot.exec_command(
                     self.command, get_pty=True)
                 output = stdout.read().decode()

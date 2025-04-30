@@ -83,7 +83,7 @@ def Angle():
         try:
             if not _FLAG_CONECT:
 
-                command='winscp.com /command "open sftp://tumi:tumi@192.168.0.10" "get data.txt" "exit"'
+                command='winscp.com /command "open sftp://tumi:tumi@10.100.108.157" "get data.txt" "exit"'
                 subprocess.run(command, shell=True, check=True)
 
                 try:

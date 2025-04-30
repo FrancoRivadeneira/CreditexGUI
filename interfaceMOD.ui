@@ -291,77 +291,6 @@ QPushButton:hover {
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="btn_angulo">
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton::QAbstractButton:icon {
-	color: rgb(255, 255, 255);
-}
-
-QPushButton {
-	border: none;
-	border-radius: 10px;
-	background-color: #0F1621;
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:hover {
-	border: none;
-	background-color: #29303C;
-	border-radius: 10px;
-	color: rgb(255, 255, 255)
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>iconos/brazo.svg</normaloff>iconos/brazo.svg</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>45</width>
-                 <height>45</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>1</width>
-                 <height>50</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
               <widget class="QPushButton" name="btn_posicion">
                <property name="minimumSize">
                 <size>
@@ -481,77 +410,6 @@ QPushButton:hover {
                <property name="icon">
                 <iconset>
                  <normaloff>iconos/position.svg</normaloff>iconos/position.svg</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>45</width>
-                 <height>45</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>1</width>
-                 <height>50</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btn_document">
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton::QAbstractButton:icon {
-	color: rgb(255, 255, 255);
-}
-
-QPushButton {
-	border: none;
-	border-radius: 10px;
-	background-color: #0F1621;
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:hover {
-	border: none;
-	background-color: #29303C;
-	border-radius: 10px;
-	color: rgb(255, 255, 255)
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>iconos/report.svg</normaloff>iconos/report.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -2806,7 +2664,7 @@ border: none;</string>
                                    <string notr="true">color:rgb(255, 255, 255)</string>
                                   </property>
                                   <property name="text">
-                                   <string>ArUco Camera</string>
+                                   <string>Camara Trasera</string>
                                   </property>
                                   <property name="alignment">
                                    <set>Qt::AlignCenter</set>
@@ -2930,7 +2788,7 @@ border: none;</string>
                                    <string notr="true">color:rgb(255, 255, 255)</string>
                                   </property>
                                   <property name="text">
-                                   <string>ArUco Camera</string>
+                                   <string>Camara Delantera</string>
                                   </property>
                                   <property name="alignment">
                                    <set>Qt::AlignCenter</set>
@@ -3011,6 +2869,276 @@ border: none;</string>
                                 </widget>
                                </item>
                                <item>
+                                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                                 <item>
+                                  <widget class="QFrame" name="verticalFrame">
+                                   <property name="minimumSize">
+                                    <size>
+                                     <width>0</width>
+                                     <height>270</height>
+                                    </size>
+                                   </property>
+                                   <property name="maximumSize">
+                                    <size>
+                                     <width>16777215</width>
+                                     <height>270</height>
+                                    </size>
+                                   </property>
+                                   <layout class="QVBoxLayout" name="verticalLayout_23">
+                                    <item>
+                                     <widget class="QFrame" name="horizontalFrame">
+                                      <property name="maximumSize">
+                                       <size>
+                                        <width>16777215</width>
+                                        <height>120</height>
+                                       </size>
+                                      </property>
+                                      <layout class="QHBoxLayout" name="horizontalLayout_6">
+                                       <item>
+                                        <widget class="QPushButton" name="btn_document_2">
+                                         <property name="minimumSize">
+                                          <size>
+                                           <width>50</width>
+                                           <height>50</height>
+                                          </size>
+                                         </property>
+                                         <property name="maximumSize">
+                                          <size>
+                                           <width>50</width>
+                                           <height>50</height>
+                                          </size>
+                                         </property>
+                                         <property name="font">
+                                          <font>
+                                           <pointsize>10</pointsize>
+                                           <weight>75</weight>
+                                           <bold>true</bold>
+                                          </font>
+                                         </property>
+                                         <property name="styleSheet">
+                                          <string notr="true"/>
+                                         </property>
+                                         <property name="text">
+                                          <string/>
+                                         </property>
+                                         <property name="icon">
+                                          <iconset>
+                                           <normaloff>iconos/SpeedInd.svg</normaloff>iconos/SpeedInd.svg</iconset>
+                                         </property>
+                                         <property name="iconSize">
+                                          <size>
+                                           <width>45</width>
+                                           <height>45</height>
+                                          </size>
+                                         </property>
+                                        </widget>
+                                       </item>
+                                       <item>
+                                        <widget class="QFrame" name="verticalFrame">
+                                         <layout class="QVBoxLayout" name="verticalLayout_26">
+                                          <item>
+                                           <widget class="QLabel" name="label_7">
+                                            <property name="font">
+                                             <font>
+                                              <family>Segoe UI Variable</family>
+                                              <pointsize>18</pointsize>
+                                             </font>
+                                            </property>
+                                            <property name="styleSheet">
+                                             <string notr="true">color:rgb(255, 255, 255)</string>
+                                            </property>
+                                            <property name="text">
+                                             <string>0 h/F</string>
+                                            </property>
+                                            <property name="alignment">
+                                             <set>Qt::AlignCenter</set>
+                                            </property>
+                                           </widget>
+                                          </item>
+                                          <item>
+                                           <widget class="QLabel" name="label_13">
+                                            <property name="font">
+                                             <font>
+                                              <family>Segoe UI Variable</family>
+                                              <pointsize>8</pointsize>
+                                             </font>
+                                            </property>
+                                            <property name="styleSheet">
+                                             <string notr="true">color:rgb(255, 255, 255)</string>
+                                            </property>
+                                            <property name="text">
+                                             <string>Velocidad Promedio</string>
+                                            </property>
+                                            <property name="alignment">
+                                             <set>Qt::AlignCenter</set>
+                                            </property>
+                                           </widget>
+                                          </item>
+                                         </layout>
+                                        </widget>
+                                       </item>
+                                      </layout>
+                                     </widget>
+                                    </item>
+                                    <item>
+                                     <widget class="QFrame" name="horizontalFrame">
+                                      <property name="maximumSize">
+                                       <size>
+                                        <width>16777215</width>
+                                        <height>120</height>
+                                       </size>
+                                      </property>
+                                      <layout class="QHBoxLayout" name="horizontalLayout_7">
+                                       <property name="spacing">
+                                        <number>0</number>
+                                       </property>
+                                       <property name="leftMargin">
+                                        <number>0</number>
+                                       </property>
+                                       <property name="topMargin">
+                                        <number>0</number>
+                                       </property>
+                                       <property name="rightMargin">
+                                        <number>0</number>
+                                       </property>
+                                       <property name="bottomMargin">
+                                        <number>0</number>
+                                       </property>
+                                       <item>
+                                        <widget class="QPushButton" name="btn_document_3">
+                                         <property name="minimumSize">
+                                          <size>
+                                           <width>50</width>
+                                           <height>50</height>
+                                          </size>
+                                         </property>
+                                         <property name="maximumSize">
+                                          <size>
+                                           <width>50</width>
+                                           <height>50</height>
+                                          </size>
+                                         </property>
+                                         <property name="font">
+                                          <font>
+                                           <pointsize>10</pointsize>
+                                           <weight>75</weight>
+                                           <bold>true</bold>
+                                          </font>
+                                         </property>
+                                         <property name="styleSheet">
+                                          <string notr="true"/>
+                                         </property>
+                                         <property name="text">
+                                          <string/>
+                                         </property>
+                                         <property name="icon">
+                                          <iconset>
+                                           <normaloff>iconos/Recorrido.svg</normaloff>iconos/Recorrido.svg</iconset>
+                                         </property>
+                                         <property name="iconSize">
+                                          <size>
+                                           <width>45</width>
+                                           <height>45</height>
+                                          </size>
+                                         </property>
+                                        </widget>
+                                       </item>
+                                       <item>
+                                        <widget class="QFrame" name="verticalFrame_2">
+                                         <layout class="QVBoxLayout" name="verticalLayout_27">
+                                          <item>
+                                           <widget class="QLabel" name="label_22">
+                                            <property name="font">
+                                             <font>
+                                              <family>Segoe UI Variable</family>
+                                              <pointsize>18</pointsize>
+                                             </font>
+                                            </property>
+                                            <property name="styleSheet">
+                                             <string notr="true">color:rgb(255, 255, 255)</string>
+                                            </property>
+                                            <property name="text">
+                                             <string>0 h</string>
+                                            </property>
+                                            <property name="alignment">
+                                             <set>Qt::AlignCenter</set>
+                                            </property>
+                                           </widget>
+                                          </item>
+                                          <item>
+                                           <widget class="QLabel" name="label_23">
+                                            <property name="font">
+                                             <font>
+                                              <family>Segoe UI Variable</family>
+                                              <pointsize>8</pointsize>
+                                             </font>
+                                            </property>
+                                            <property name="styleSheet">
+                                             <string notr="true">color:rgb(255, 255, 255)</string>
+                                            </property>
+                                            <property name="text">
+                                             <string>Distancia Recorrida</string>
+                                            </property>
+                                            <property name="alignment">
+                                             <set>Qt::AlignCenter</set>
+                                            </property>
+                                           </widget>
+                                          </item>
+                                         </layout>
+                                        </widget>
+                                       </item>
+                                      </layout>
+                                     </widget>
+                                    </item>
+                                    <item>
+                                     <widget class="QPushButton" name="pushButton_23">
+                                      <property name="minimumSize">
+                                       <size>
+                                        <width>0</width>
+                                        <height>30</height>
+                                       </size>
+                                      </property>
+                                      <property name="maximumSize">
+                                       <size>
+                                        <width>230</width>
+                                        <height>30</height>
+                                       </size>
+                                      </property>
+                                      <property name="font">
+                                       <font>
+                                        <pointsize>16</pointsize>
+                                       </font>
+                                      </property>
+                                      <property name="styleSheet">
+                                       <string notr="true">QPushButton::QAbstractButton:icon {
+	color: rgb(255, 255, 255);
+}
+
+QPushButton {
+	border: none;
+	border-radius: 10px;
+	background-color: #0F1621;
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:hover {
+	border: none;
+	background-color: #29303C;
+	border-radius: 10px;
+	color: rgb(255, 255, 255)
+}</string>
+                                      </property>
+                                      <property name="text">
+                                       <string>Iniciar/Detener</string>
+                                      </property>
+                                     </widget>
+                                    </item>
+                                   </layout>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </item>
+                               <item>
                                 <widget class="QFrame" name="horizontalFrame">
                                  <property name="minimumSize">
                                   <size>
@@ -3031,259 +3159,6 @@ border: none;</string>
                                   <property name="topMargin">
                                    <number>0</number>
                                   </property>
-                                  <item>
-                                   <widget class="QFrame" name="verticalFrame">
-                                    <property name="minimumSize">
-                                     <size>
-                                      <width>0</width>
-                                      <height>270</height>
-                                     </size>
-                                    </property>
-                                    <property name="maximumSize">
-                                     <size>
-                                      <width>16777215</width>
-                                      <height>270</height>
-                                     </size>
-                                    </property>
-                                    <layout class="QVBoxLayout" name="verticalLayout_23">
-                                     <item>
-                                      <widget class="QFrame" name="horizontalFrame">
-                                       <property name="maximumSize">
-                                        <size>
-                                         <width>16777215</width>
-                                         <height>120</height>
-                                        </size>
-                                       </property>
-                                       <layout class="QHBoxLayout" name="horizontalLayout_6">
-                                        <item>
-                                         <widget class="QPushButton" name="btn_document_2">
-                                          <property name="minimumSize">
-                                           <size>
-                                            <width>50</width>
-                                            <height>50</height>
-                                           </size>
-                                          </property>
-                                          <property name="maximumSize">
-                                           <size>
-                                            <width>50</width>
-                                            <height>50</height>
-                                           </size>
-                                          </property>
-                                          <property name="font">
-                                           <font>
-                                            <pointsize>10</pointsize>
-                                            <weight>75</weight>
-                                            <bold>true</bold>
-                                           </font>
-                                          </property>
-                                          <property name="styleSheet">
-                                           <string notr="true"/>
-                                          </property>
-                                          <property name="text">
-                                           <string/>
-                                          </property>
-                                          <property name="icon">
-                                           <iconset>
-                                            <normaloff>iconos/SpeedInd.svg</normaloff>iconos/SpeedInd.svg</iconset>
-                                          </property>
-                                          <property name="iconSize">
-                                           <size>
-                                            <width>45</width>
-                                            <height>45</height>
-                                           </size>
-                                          </property>
-                                         </widget>
-                                        </item>
-                                        <item>
-                                         <widget class="QFrame" name="verticalFrame">
-                                          <layout class="QVBoxLayout" name="verticalLayout_26">
-                                           <item>
-                                            <widget class="QLabel" name="label_7">
-                                             <property name="font">
-                                              <font>
-                                               <family>Segoe UI Variable</family>
-                                               <pointsize>18</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color:rgb(255, 255, 255)</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>0 h/F</string>
-                                             </property>
-                                             <property name="alignment">
-                                              <set>Qt::AlignCenter</set>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                           <item>
-                                            <widget class="QLabel" name="label_13">
-                                             <property name="font">
-                                              <font>
-                                               <family>Segoe UI Variable</family>
-                                               <pointsize>8</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color:rgb(255, 255, 255)</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>Velocidad Promedio</string>
-                                             </property>
-                                             <property name="alignment">
-                                              <set>Qt::AlignCenter</set>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                           <item>
-                                            <widget class="QLabel" name="label_11">
-                                             <property name="font">
-                                              <font>
-                                               <pointsize>9</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color: white</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>-----------------------------------------</string>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                          </layout>
-                                         </widget>
-                                        </item>
-                                       </layout>
-                                      </widget>
-                                     </item>
-                                     <item>
-                                      <widget class="QFrame" name="horizontalFrame">
-                                       <property name="maximumSize">
-                                        <size>
-                                         <width>16777215</width>
-                                         <height>120</height>
-                                        </size>
-                                       </property>
-                                       <layout class="QHBoxLayout" name="horizontalLayout_7">
-                                        <property name="spacing">
-                                         <number>0</number>
-                                        </property>
-                                        <property name="leftMargin">
-                                         <number>0</number>
-                                        </property>
-                                        <property name="topMargin">
-                                         <number>0</number>
-                                        </property>
-                                        <property name="rightMargin">
-                                         <number>0</number>
-                                        </property>
-                                        <property name="bottomMargin">
-                                         <number>0</number>
-                                        </property>
-                                        <item>
-                                         <widget class="QPushButton" name="btn_document_3">
-                                          <property name="minimumSize">
-                                           <size>
-                                            <width>50</width>
-                                            <height>50</height>
-                                           </size>
-                                          </property>
-                                          <property name="maximumSize">
-                                           <size>
-                                            <width>50</width>
-                                            <height>50</height>
-                                           </size>
-                                          </property>
-                                          <property name="font">
-                                           <font>
-                                            <pointsize>10</pointsize>
-                                            <weight>75</weight>
-                                            <bold>true</bold>
-                                           </font>
-                                          </property>
-                                          <property name="styleSheet">
-                                           <string notr="true"/>
-                                          </property>
-                                          <property name="text">
-                                           <string/>
-                                          </property>
-                                          <property name="icon">
-                                           <iconset>
-                                            <normaloff>iconos/Recorrido.svg</normaloff>iconos/Recorrido.svg</iconset>
-                                          </property>
-                                          <property name="iconSize">
-                                           <size>
-                                            <width>45</width>
-                                            <height>45</height>
-                                           </size>
-                                          </property>
-                                         </widget>
-                                        </item>
-                                        <item>
-                                         <widget class="QFrame" name="verticalFrame_2">
-                                          <layout class="QVBoxLayout" name="verticalLayout_27">
-                                           <item>
-                                            <widget class="QLabel" name="label_22">
-                                             <property name="font">
-                                              <font>
-                                               <family>Segoe UI Variable</family>
-                                               <pointsize>18</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color:rgb(255, 255, 255)</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>0 h</string>
-                                             </property>
-                                             <property name="alignment">
-                                              <set>Qt::AlignCenter</set>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                           <item>
-                                            <widget class="QLabel" name="label_23">
-                                             <property name="font">
-                                              <font>
-                                               <family>Segoe UI Variable</family>
-                                               <pointsize>8</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color:rgb(255, 255, 255)</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>Distancia Recorrida</string>
-                                             </property>
-                                             <property name="alignment">
-                                              <set>Qt::AlignCenter</set>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                           <item>
-                                            <widget class="QLabel" name="label_24">
-                                             <property name="font">
-                                              <font>
-                                               <pointsize>9</pointsize>
-                                              </font>
-                                             </property>
-                                             <property name="styleSheet">
-                                              <string notr="true">color: white</string>
-                                             </property>
-                                             <property name="text">
-                                              <string>-----------------------------------------</string>
-                                             </property>
-                                            </widget>
-                                           </item>
-                                          </layout>
-                                         </widget>
-                                        </item>
-                                       </layout>
-                                      </widget>
-                                     </item>
-                                    </layout>
-                                   </widget>
-                                  </item>
                                   <item>
                                    <widget class="QFrame" name="verticalFrame">
                                     <layout class="QVBoxLayout" name="verticalLayout_25"/>

@@ -36,13 +36,13 @@ pygame.joystick.init()
 # from utils.VideoStreamThread import VideoStreamThread as VideoStreamThread
 exit_flag = threading.Event()
 
-url1_check = "http://192.168.68.201:8080"
-url2_check = "http://192.168.68.201:8085"
-url3_check = "http://192.168.68.201:8070"
+url1_check = "http://10.100.108.157:8080"
+url2_check = "http://10.100.108.157:8085"
+url3_check = "http://10.100.108.157:8070"
 
-url = "http://192.168.68.201:8080/?action=stream"
-url2 = "http://192.168.68.201:8085/?action=stream"
-url3 = "http://192.168.68.201:8070/?action=stream"  # Brazo
+url = "http://10.100.108.157:8080/?action=stream"
+url2 = "http://10.100.108.157:8085/?action=stream"
+url3 = "http://10.100.108.157:8070/?action=stream"  # Brazo
 
 
 COORDINATES = []
@@ -67,7 +67,7 @@ SPEED = 0
 
 """ DATOS DEL HARDWARE """
 # ROBOT INFO (RASPBERRY REMOTE)
-IP_ADDR = "192.168.68.201"  # NUC
+IP_ADDR = "10.100.108.157"  # NUC
 IP_ADDR_B = "192.168.0.14"  # "192.168.0.14"
 IP_ADDR_CAM = "192.168.23.176"
 PORT = 8666
@@ -543,7 +543,7 @@ class MainUi (QtWidgets.QMainWindow):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             # Conectar el socket al puerto donde el servidor está escuchando
-            server_address = ('192.168.0.10', PORT)
+            server_address = ('10.100.108.157', PORT)
             print(
                 f"Conectando a {server_address[0]} puerto {server_address[1]}")
             s.connect(server_address)

@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 import logging  # Libreria para info Logging
 from pygame.locals import *
 import paramiko
-ROBOT_TERRESTRE_IP_ADDR = "192.168.68.201"  # "192.168.1.166""192.168.1.133"
+ROBOT_TERRESTRE_IP_ADDR = "10.100.108.157"  # "192.168.1.166""192.168.1.133"
 ROBOT_TERRESTRE_USERNAME = "pi"
 ROBOT_TERRESTRE_PASSWORD = "raspberry"
 

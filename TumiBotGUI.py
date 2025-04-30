@@ -59,7 +59,7 @@ comandoList = [
     ["$OAX3JX2", [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], "Disminuir Velocidad"],  # noqa
     ["$OAX3JRA", [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], "Avanzar Derecha"],  # noqa
     ["$OAX3JLA", [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0], "Avanzar Izquierda"],  # noqa
-    ["$OAX1M", [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], "Activar Motores"],  # CAMBIAR ESTO es Y + FlechaArriba # noqa
+    ["$OAX1M",   [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], "Activar Motores"],  # CAMBIAR ESTO es Y + FlechaArriba # noqa
     ["$OAX3JAR", [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], "Apagar Rele"],  # CAMBIAR ESTO es Y + FlechaAbajo # noqa
     ["$OAX3JBE", [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "Boton Emergencia"],  # CAMBIAR ESTO es Y + FlechaIzquierda # noqa
 ]
@@ -108,9 +108,6 @@ class GUI(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-        self.map_df = pd.read_csv('maps.csv')
-        self.initialize_map_frames()
-
         """ DEFINICION de FLAG """
         self._FLAG_buttonOnPressed = False
         self._FLAG_socketConected = False
@@ -387,10 +384,7 @@ class GUI(QMainWindow):
         self.ui.btn_zoom_out.released.connect(self._THREAD_updateCamera3.stop_move)  # noqa
 
         """ Modos la GUI """
-        self.ui.btn_general.clicked.connect(self.distribuir_general)
         # self.ui.btn_parada.clicked.connect(self.parada)
-        self.ui.btn_angulo.clicked.connect(self.distribuir_arm)
-        self.ui.btn_document.clicked.connect(self.distribuir_document)
         self.ui.btn_archivos.clicked.connect(self.distribuir_archivos)
         self.ui.btn_posicion.clicked.connect(self.distribuir_posicion)
         self.ui.btn_tumi.clicked.connect(self.distribuir_secret)
@@ -1101,7 +1095,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1132,7 +1125,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1163,7 +1155,6 @@ class GUI(QMainWindow):
         self.ui.main_body_left.setMaximumSize(10000, 10000)
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(0, 0)
-        # Contiene a frame_arm, frame_position y frame_secret
         self.ui.frame_left_up.setMaximumSize(2000, 1240)
         # Contiene a frame_arch, frame_documents y derivados del reporte
         self.ui.frame_left_down.setMaximumSize(0, 0)
@@ -1173,7 +1164,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(100000, 100000)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1205,7 +1195,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(10000, 10000)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1226,7 +1215,6 @@ class GUI(QMainWindow):
         self.ui.main_body_left.setMaximumSize(0, 0)  # Contiene frame_left_up
         # Contiene a frame_general y a frame_mapa
         self.ui.main_frames_login.setMaximumSize(10000, 10000)
-        # Contiene a frame_arm, frame_position y frame_secret
         self.ui.frame_left_up.setMaximumSize(0, 0)
         # Contiene a frame_arch, frame_documents y derivados del reporte
         self.ui.frame_left_down.setMaximumSize(0, 0)
@@ -1234,7 +1222,6 @@ class GUI(QMainWindow):
         # Frames Ventanas
         self.ui.frame_first.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(10000, 10040)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1247,29 +1234,11 @@ class GUI(QMainWindow):
         # self.ui.VisionCamara1.setMaximumSize(960,570)
         # self.ui.VisionCamara2.setMinimumSize(250, 150)
         # self.ui.VisionCamara2.setMaximumSize(250, 150)
-        if not FLAG_MAPA:
-            self.ui.frame_mapa.setMaximumSize(100000, 100000)
-            self.ui.frame_general.setMaximumSize(0, 0)
-            self.ui.frame_general_auto.setMaximumSize(0, 0)
-        else:
 
-            # self.btn_mapa2.setIcon(icon)
-            # self.btn_mapa2.setIconSize(QtCore.QSize(400, 250))
-            if not FLAG_AUTO:
-                self.ui.frame_mapa.setMaximumSize(0, 0)
-                self.ui.frame_general.setMaximumSize(10000, 10000)
-                self.ui.frame_general_auto.setMaximumSize(0, 0)
-            else:
-                self.ui.frame_mapa.setMaximumSize(0, 0)
-                self.ui.frame_general.setMaximumSize(0, 0)
-                self.ui.frame_general_auto.setMaximumSize(10000, 10000)
-                # self.btn_VisionCamara1_3.lower()
-                # self.setLayout(self.frame_cam_map)
-                # self.frame_cam_map().removeWidget(self.btn_VisionCamara1_3)
-                # self.frame_cam_map().removeWidget(self.btn_map)
-                # self.frame_cam_map().addWidget(self.btn_map)
-                # self.frame_cam_map().addWidget(self.btn_VisionCamara1_3)
-
+        self.ui.frame_mapa.setMaximumSize(0, 0)
+        self.ui.frame_general.setMaximumSize(10000, 10000)
+        self.ui.frame_general_auto.setMaximumSize(0, 0)
+        
     #################################################################
 
     def distribuir_document(self):
@@ -1289,7 +1258,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1322,7 +1290,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(10000, 10040)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1373,7 +1340,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(10000, 10000)
         self.ui.frame_secret.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(10000, 10040)
         self.ui.frame_arch.setMaximumSize(0, 0)
 
@@ -1405,7 +1371,6 @@ class GUI(QMainWindow):
         self.ui.frame_mapa.setMaximumSize(0, 0)
         self.ui.frame_secret.setMaximumSize(0, 0)
         self.ui.frame_general.setMaximumSize(0, 0)
-        self.ui.frame_arm.setMaximumSize(0, 0)
         self.ui.frame_posicion.setMaximumSize(0, 0)
         self.ui.frame_arch.setMaximumSize(10000, 10000)
 
